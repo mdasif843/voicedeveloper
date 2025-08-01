@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- এখানে টুলের নাম অনুযায়ী টাইটেল পরিবর্তন করুন -->
+    <title>Plagiarism Checker - Voice Developer</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #10121A;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero-section {
+            background: linear-gradient(105deg, #dd2476, #ff512f);
+        }
+        .footer-bg {
+            background-color: #0D0F14;
+        }
+        .tool-container {
+            background-color: #1A1F3A;
+            border: 1px solid #2D3748;
+        }
+        textarea {
+            background-color: #10121A;
+            border: 1px solid #2D3748;
+            color: #E2E8F0;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #28A745;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #1E7B5A, #28A745);
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <!-- হেডার সেকশন (হোমপেজের মতো একই) -->
+    <header class="hero-section relative">
+        <nav class="absolute top-0 left-0 right-0 z-20 text-white">
+            <div class="main-container px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="flex items-center space-x-2"> <!-- হোমপেজে ফেরার লিংক -->
+                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FFF"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0" fill="#dd2476"/></svg>
+                        <span class="text-2xl font-bold">Voice Developer</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">Login</a>
+                    <a href="#" class="text-sm font-semibold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md transition-colors">Register</a>
+                </div>
+            </div>
+        </nav>
+        <!-- এই পেজের জন্য ছোট হেডার -->
+        <div class="h-[200px] flex flex-col justify-center items-center text-center text-white pt-12">
+            <!-- এখানে টুলের নাম পরিবর্তন করুন -->
+            <h1 class="text-4xl md:text-5xl font-extrabold">Plagiarism Checker</h1>
+        </div>
+    </header>
+
+    <!-- টুল কন্টেন্ট -->
+    <div class="main-container px-4 -mt-16 relative z-10">
+        <main>
+            <div class="tool-container p-6 md:p-8 rounded-lg shadow-lg">
+                <!-- এখানে টুলের বর্ণনা পরিবর্তন করুন -->
+                <p class="text-center text-gray-400 mb-6">
+                    আপনার লেখাটি এখানে পেস্ট করে মৌলিকতা যাচাই করুন। আমাদের সিস্টেম লেখাটি বিশ্লেষণ করে ইন্টারনেটে থাকা অন্যান্য লেখার সাথে তুলনা করবে।
+                </p>
+
+                <!-- ইনপুট বক্স -->
+                <div class="mb-6">
+                    <textarea 
+                        rows="10" 
+                        class="w-full p-4 rounded-lg focus:ring-2 focus:ring-green-500 transition-all"
+                        placeholder="আপনার লেখাটি এখানে পেস্ট করুন..."
+                    ></textarea>
+                </div>
+
+                <!-- সাবমিট বাটন -->
+                <div class="text-center">
+                    <button class="submit-button text-white font-bold py-3 px-10 rounded-lg hover:opacity-90 transition-opacity">
+                        Check Plagiarism
+                    </button>
+                </div>
+
+                <!-- ফলাফল দেখানোর সেকশন -->
+                <div id="results" class="mt-8 border-t border-gray-700 pt-6">
+                    <h3 class="text-2xl font-bold text-white text-center mb-4">ফলাফল</h3>
+                    <div class="bg-[#10121A] p-6 rounded-lg text-center">
+                        <p class="text-gray-500">ফলাফল এখানে দেখানো হবে।</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ফুটার সেকশন (হোমপেজের মতো একই) -->
+        <footer class="footer-bg mt-10 p-8 rounded-lg">
+             <div class="border-t border-gray-800 pt-6 text-center text-gray-500">
+                <p>&copy; 2024 Voice Developer. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

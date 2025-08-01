@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover Tool - Voice Developer</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #10121A;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero-section {
+            background: linear-gradient(105deg, #dd2476, #ff512f);
+        }
+        .footer-bg {
+            background-color: #0D0F14;
+        }
+        .tool-container {
+            background-color: #1A1F3A;
+            border: 1px solid #2D3748;
+        }
+        .download-button {
+            background: linear-gradient(to right, #1E7B5A, #28A745);
+            transition: all 0.3s ease;
+        }
+        .download-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .telegram-button {
+            background-color: #2AABEE;
+        }
+        .telegram-button:hover {
+            background-color: #1a9cd6;
+        }
+        /* ইউটিউব ভিডিওর জন্য নতুন স্টাইল */
+        .video-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 0.5rem;
+            border: 2px solid #2D3748;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <!-- হেডার সেকশন (হোমপেজের মতো একই) -->
+    <header class="hero-section relative">
+        <nav class="absolute top-0 left-0 right-0 z-20 text-white">
+            <div class="main-container px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="flex items-center space-x-2"> <!-- হোমপেজে ফেরার লিংক -->
+                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FFF"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0" fill="#dd2476"/></svg>
+                        <span class="text-2xl font-bold">Voice Developer</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">Login</a>
+                    <a href="#" class="text-sm font-semibold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md transition-colors">Register</a>
+                </div>
+            </div>
+        </nav>
+        <!-- এই পেজের জন্য ছোট হেডার -->
+        <div class="h-[200px] flex flex-col justify-center items-center text-center text-white pt-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold">BM Remove</h1>
+        </div>
+    </header>
+
+    <!-- টুল কন্টেন্ট -->
+    <div class="main-container px-4 -mt-16 relative z-10">
+        <main>
+            <div class="tool-container p-6 md:p-8 rounded-lg shadow-lg">
+                
+                <!-- ভিডিও টিউটোরিয়াল সেকশন -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-white text-center mb-4">কিভাবে ব্যবহার করবেন?</h2>
+                    <!-- আপডেটেড ভিডিও কন্টেইনার -->
+                    <div class="video-container">
+                        <!-- এখানে আপনার ইউটিউব ভিডিওর Embed লিংক দিন -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/CT653i0epx8" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                </div>
+
+                <!-- ডাউনলোড সেকশন -->
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-semibold text-white mb-4">ফাইলটি ডাউনলোড করুন</h3>
+                    <a href="https://drive.google.com/file/d/1Iu0C-HuGnU_Gh8beqJmZmsCZMMQygNt9/view?usp=sharing" class="download-button inline-block text-white font-bold py-4 px-12 rounded-lg text-lg" target="_blank">
+                        <i class="fas fa-download mr-2"></i>
+                        Download Now
+                    </a>
+                    <p class="text-gray-500 text-sm mt-2">Latest Version: 1.2.0</p>
+                </div>
+
+                <!-- টেলিগ্রাম সেকশন -->
+                <div class="border-t border-gray-700 pt-6 text-center">
+                     <h3 class="text-xl font-semibold text-white mb-4">সাপোর্টের জন্য জয়েন করুন</h3>
+                     <a href="https://t.me/theearningproject1" target="_blank" class="telegram-button inline-flex items-center text-white font-bold py-3 px-8 rounded-lg">
+                        <i class="fab fa-telegram-plane mr-3 text-2xl"></i>
+                        Join Our Telegram
+                     </a>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- ফুটার সেকশন (হোমপেজের মতো একই) -->
+        <footer class="footer-bg mt-10 p-8 rounded-lg">
+             <div class="border-t border-gray-800 pt-6 text-center text-gray-500">
+                <p>&copy; 2024 Voice Developer. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Developer - ফ্রি অনলাইন টুলস</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* কাস্টম স্টাইল */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #10121A; /* মূল ব্যাকগ্রাউন্ড কালার */
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            background: linear-gradient(to right, #1E7B5A, #28A745); /* সবুজ গ্র্যাডিয়েন্ট */
+        }
+        .tool-card {
+            background-color: #1A1F3A; /* কার্ডের ব্যাকগ্রাউন্ড */
+            border: 1px solid #2D3748;
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #28A745;
+        }
+        .hero-section {
+            background: linear-gradient(105deg, #dd2476, #ff512f);
+        }
+        .footer-bg {
+            background-color: #0D0F14;
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <!-- নতুন হেডার এবং হিরো সেকশন -->
+    <header class="hero-section relative">
+        <!-- টপ নেভিগেশন বার -->
+        <nav class="absolute top-0 left-0 right-0 z-20 text-white">
+            <div class="main-container px-4 py-4 flex justify-between items-center">
+                <!-- লোগো এবং প্রধান মেনু -->
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FFF"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0" fill="#dd2476"/></svg>
+                        <span class="text-2xl font-bold">Voice Developer</span>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-6 text-sm">
+                        <a href="#" class="hover:text-gray-200">Levels</a>
+                        <a href="#" class="hover:text-gray-200">Blog</a>
+                        <a href="#" class="hover:text-gray-200">Report Links</a>
+                        <a href="#" class="hover:text-gray-200">Contact</a>
+                    </div>
+                </div>
+
+                <!-- ডান পাশের মেনু -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#" class="flex items-center space-x-1 hover:text-gray-200">
+                        <span>English</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </a>
+                    <a href="#" class="hover:text-gray-200"><i class="fas fa-search"></i></a>
+                    <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">Login</a>
+                    <a href="#" class="text-sm font-semibold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md transition-colors">Register</a>
+                </div>
+
+                <!-- মোবাইল মেনু বাটন -->
+                <button class="md:hidden text-white">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- হিরো কন্টেন্ট -->
+        <div class="h-[400px] flex flex-col justify-center items-center text-center text-white pt-20">
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">Voice Developer</h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-200">The Best Free Online Web Tools You Will Ever Need</p>
+        </div>
+    </header>
+
+
+    <div class="main-container px-4 -mt-16 relative z-10">
+        <!-- মূল কন্টেন্ট -->
+        <main>
+            <!-- টেক্সট কন্টেন্ট টুলস -->
+            <section class="mb-10">
+                <h2 class="section-header text-white font-bold text-lg p-3 rounded-t-lg">
+                    Facebook Automation Tools
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 bg-[#1A1F3A] rounded-b-lg shadow-lg">
+                    <!-- টুল কার্ড -->
+                    <a href="plagiarism.html" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-paste fa-2x text-green-400"></i>
+                        <span class="font-semibold">Auto Boost</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-pen-nib fa-2x text-green-400"></i>
+                        <span class="font-semibold">BM Tranfer</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-spell-check fa-2x text-green-400"></i>
+                        <span class="font-semibold">5 BM Create</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-calculator fa-2x text-green-400"></i>
+                        <span class="font-semibold">BM Verify</span>
+                    </a>
+                    <a href="bmremove.html" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-language fa-2x text-green-400"></i>
+                        <span class="font-semibold">BM Remove</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-file-pdf fa-2x text-green-400"></i>
+                        <span class="font-semibold">Play Button</span>
+                    </a>
+                    
+                </div>
+            </section>
+
+            <!-- ইমেজ এডিটিং টুলস -->
+            <section class="mb-10">
+                <h2 class="section-header text-white font-bold text-lg p-3 rounded-t-lg">
+                    Image Automation Tools
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 bg-[#1A1F3A] rounded-b-lg shadow-lg">
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-crop-alt fa-2x text-blue-400"></i>
+                        <span class="font-semibold">Image Resizer</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-compress-arrows-alt fa-2x text-blue-400"></i>
+                        <span class="font-semibold">Image Compressor</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-file-image fa-2x text-blue-400"></i>
+                        <span class="font-semibold">JPG to PNG</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-camera-retro fa-2x text-blue-400"></i>
+                        <span class="font-semibold">PNG to JPG</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-vr-cardboard fa-2x text-blue-400"></i>
+                        <span class="font-semibold">Image to Base64</span>
+                    </a>
+                    <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-code fa-2x text-blue-400"></i>
+                        <span class="font-semibold">Base64 to Image</span>
+                    </a>
+                     <a href="#" class="tool-card p-4 rounded-lg flex items-center space-x-3">
+                        <i class="fas fa-palette fa-2x text-blue-400"></i>
+                        <span class="font-semibold">Color Picker</span>
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ফুটার সেকশন -->
+        <footer class="footer-bg mt-10 p-8 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About Section -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">About Us</h3>
+                    <p class="text-gray-400 mb-4">
+                        Voice Developer is a collection of free online tools for developers, students, and digital marketers. All tools are free to use.
+                    </p>
+                    <img src="https://placehold.co/300x150/1a1f3a/ffffff?text=Office+Image" alt="অফিসের ছবি" class="rounded-lg">
+                </div>
+
+                <!-- User/Testimonial Section -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Loved by Users</h3>
+                    <div class="bg-[#1A1F3A] p-4 rounded-lg border border-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <img src="https://placehold.co/60x60/28a745/ffffff?text=User" alt="ব্যবহারকারীর ছবি" class="rounded-full">
+                            <div>
+                                <h4 class="font-semibold text-white">John Doe</h4>
+                                <p class="text-sm text-gray-400">Web Developer</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-400 italic">"This is the best collection of tools I have ever used. Highly recommended!"</p>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500">
+                <p>&copy; 2024 Voice Developer. All Rights Reserved.</p>
+                <div class="mt-2">
+                    <a href="#" class="hover:text-white text-sm mx-2">Privacy Policy</a>
+                    <a href="#" class="hover:text-white text-sm mx-2">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
