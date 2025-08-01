@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BM Remover Tool - Voice Developer</title>
+    <title>BM Remove Tool - Voice Developer</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,139 +11,190 @@
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        /* কাস্টম স্টাইল */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #10121A;
+            background-color: #020617; /* প্রধান ডার্ক ব্যাকগ্রাউন্ড */
+            color: #E2E8F0;
+            overflow-x: hidden;
+            /* ফুটারের জন্য জায়গা তৈরি করতে প্যাডিং */
+            padding-bottom: 80px; 
         }
+        
+        /* অরোরা ব্যাকগ্রাউন্ড ইফেক্ট */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 15% 25%, rgba(34, 211, 238, 0.15), transparent 40%),
+                        radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.15), transparent 40%);
+            z-index: -1;
+            animation: aurora 20s infinite alternate linear;
+        }
+
+        @keyframes aurora {
+            0% { transform: rotate(0deg) scale(1.2); }
+            50% { transform: rotate(180deg) scale(1.5); }
+            100% { transform: rotate(360deg) scale(1.2); }
+        }
+
         .main-container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
         }
-        .hero-section {
-            background: linear-gradient(105deg, #dd2476, #ff512f);
+        
+        .logo-accent {
+            fill: #22d3ee;
         }
-        .footer-bg {
-            background-color: #0D0F14;
+
+        /* অ্যানিমেটেড গ্র্যাডিয়েন্ট টেক্সট */
+        .gradient-text {
+            background: linear-gradient(90deg, #67e8f9, #22d3ee, #818cf8, #67e8f9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 250% auto;
+            animation: text-shine 8s linear infinite;
         }
+        @keyframes text-shine {
+            to {
+                background-position: -250% center;
+            }
+        }
+        
+        /* টুল কন্টেইনার */
         .tool-container {
-            background-color: #1A1F3A;
-            border: 1px solid #2D3748;
+            background-color: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .download-button {
-            background: linear-gradient(to right, #1E7B5A, #28A745);
+            background-color: #22d3ee;
+            color: #020617;
             transition: all 0.3s ease;
         }
         .download-button:hover {
+            background-color: #67e8f9;
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
         }
+
         .telegram-button {
-            background-color: #2AABEE;
+            background-color: transparent;
+            border: 1px solid #22d3ee;
+            color: #22d3ee;
+            transition: all 0.3s ease;
         }
         .telegram-button:hover {
-            background-color: #1a9cd6;
+            background-color: #22d3ee;
+            color: #020617;
         }
-        /* ইউটিউব ভিডিওর জন্য নতুন স্টাইল */
-        .video-container {
-            position: relative;
+        
+        /* ফুটার স্টাইল */
+        .footer-bg {
+            background-color: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            overflow: hidden;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            border-radius: 0.5rem;
-            border: 2px solid #2D3748;
+            z-index: 50;
         }
-        .video-container iframe {
+
+        /* রেসপন্সিভ ইউটিউব ভিডিও */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
-            bottom: 0;
-            right: 0;
             width: 100%;
             height: 100%;
-            border: none;
         }
+
     </style>
 </head>
-<body class="text-gray-300">
+<body>
+    <div class="aurora-bg"></div>
 
-    <!-- হেডার সেকশন (হোমপেজের মতো একই) -->
-    <header class="hero-section relative">
+    <!-- হেডার সেকশন -->
+    <header class="relative">
         <nav class="absolute top-0 left-0 right-0 z-20 text-white">
             <div class="main-container px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-8">
-                    <a href="index.html" class="flex items-center space-x-2"> <!-- হোমপেজে ফেরার লিংক -->
-                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FFF"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0" fill="#dd2476"/></svg>
-                        <span class="text-2xl font-bold">Voice Developer</span>
-                    </a>
+                <a href="index.html" class="flex items-center space-x-2">
+                    <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="#FFF"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0-10 0" class="logo-accent"/></svg>
+                    <span class="text-2xl font-bold tracking-wider">VoiceDev</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white/10 transition-colors">Login</a>
+                    <a href="#" class="text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 py-2 px-4 rounded-md transition-colors">Register</a>
                 </div>
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white hover:text-black transition-colors">Login</a>
-                    <a href="#" class="text-sm font-semibold bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md transition-colors">Register</a>
-                </div>
+                <button class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
             </div>
         </nav>
-        <!-- এই পেজের জন্য ছোট হেডার -->
-        <div class="h-[200px] flex flex-col justify-center items-center text-center text-white pt-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold">BM Remove</h1>
-        </div>
     </header>
 
-    <!-- টুল কন্টেন্ট -->
-    <div class="main-container px-4 -mt-16 relative z-10">
-        <main>
-            <div class="tool-container p-6 md:p-8 rounded-lg shadow-lg">
-                
-                <!-- ভিডিও টিউটোরিয়াল সেকশন -->
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-white text-center mb-4">কিভাবে ব্যবহার করবেন?</h2>
-                    <!-- আপডেটেড ভিডিও কন্টেইনার -->
-                    <div class="video-container">
-                        <!-- এখানে আপনার ইউটিউব ভিডিওর Embed লিংক দিন -->
+    <main class="main-container px-4 relative z-10 pt-32 pb-16">
+        <!-- টুল কন্টেন্ট -->
+        <div class="tool-container rounded-2xl shadow-2xl overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- বাম পাশ: ইউটিউব ভিডিও -->
+                <div class="p-6">
+                    <div class="video-wrapper">
                         <iframe 
                             src="https://www.youtube.com/embed/CT653i0epx8" 
                             title="YouTube video player" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen
-                        ></iframe>
+                            allowfullscreen>
+                        </iframe>
                     </div>
                 </div>
 
-                <!-- ডাউনলোড সেকশন -->
-                <div class="text-center mb-8">
-                    <h3 class="text-xl font-semibold text-white mb-4">ফাইলটি ডাউনলোড করুন</h3>
-                    <a href="https://drive.google.com/file/d/1Iu0C-HuGnU_Gh8beqJmZmsCZMMQygNt9/view?usp=sharing" class="download-button inline-block text-white font-bold py-4 px-12 rounded-lg text-lg" target="_blank">
-                        <i class="fas fa-download mr-2"></i>
-                        Download Now
-                    </a>
-                    <p class="text-gray-500 text-sm mt-2">Latest Version: 1.2.0</p>
+                <!-- ডান পাশ: টেক্সট এবং বাটন -->
+                <div class="p-8 flex flex-col justify-center">
+                    <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                        BM Remove <span class="gradient-text">Tool</span>
+                    </h1>
+                    <p class="mt-4 text-slate-300 leading-relaxed">
+                        এই শক্তিশালী টুলটি ব্যবহার করে যেকোনো ছবির ব্যাকগ্রাউন্ড মাত্র এক ক্লিকেই রিমুভ করুন। আমাদের AI প্রযুক্তি আপনার কাজকে আরও সহজ এবং দ্রুত করে তুলবে।
+                    </p>
+                    
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <a href="https://drive.google.com/file/d/1Iu0C-HuGnU_Gh8beqJmZmsCZMMQygNt9/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-button font-bold py-3 px-8 rounded-full text-center">
+                            <i class="fas fa-download mr-2"></i>
+                            Download Now
+                        </a>
+                        <a href="https://t.me/theearningproject1" target="_blank" rel="noopener noreferrer" class="telegram-button font-bold py-3 px-8 rounded-full text-center">
+                           <i class="fab fa-telegram-plane mr-2"></i>
+                           Join Telegram
+                        </a>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-4">Latest Version: 2.0.1</p>
                 </div>
-
-                <!-- টেলিগ্রাম সেকশন -->
-                <div class="border-t border-gray-700 pt-6 text-center">
-                     <h3 class="text-xl font-semibold text-white mb-4">সাপোর্টের জন্য জয়েন করুন</h3>
-                     <a href="https://t.me/theearningproject1" target="_blank" class="telegram-button inline-flex items-center text-white font-bold py-3 px-8 rounded-lg">
-                        <i class="fab fa-telegram-plane mr-3 text-2xl"></i>
-                        Join Our Telegram
-                     </a>
-                </div>
-
             </div>
-        </main>
+        </div>
+    </main>
 
-        <!-- ফুটার সেকশন (হোমপেজের মতো একই) -->
-        <footer class="footer-bg mt-10 p-8 rounded-lg">
-             <div class="border-t border-gray-800 pt-6 text-center text-gray-500">
-                <p>&copy; 2024 Voice Developer. All Rights Reserved.</p>
-            </div>
-        </footer>
-    </div>
+    <footer class="footer-bg p-6">
+        <div class="main-container text-center text-slate-500">
+            <p>&copy; 2024 VoiceDev. All Rights Reserved.</p>
+        </div>
+    </footer>
 
 </body>
 </html>
