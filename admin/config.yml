@@ -1,0 +1,23 @@
+# config.yml
+
+backend:
+  name: github
+  repo: your-username/your-repository-name # এখানে আপনার GitHub ইউজারনেম/রিপোজিটরির নাম দিন
+  branch: main # কোন ব্রাঞ্চে কনটেন্ট সেভ হবে
+
+media_folder: "assets/images" # ছবি আপলোড করলে কোথায় সেভ হবে
+public_folder: "/assets/images"
+
+collections:
+  - name: "tools" # কনটেন্টের একটি গ্রুপ (যেমন: আপনার টুলস)
+    label: "Tools" # CMS-এ কী নামে দেখা যাবে
+    folder: "_tools" # কনটেন্টগুলো কোন ফোল্ডারে সেভ হবে
+    create: true # নতুন টুল যোগ করার অপশন থাকবে
+    slug: "{{slug}}" # ফাইলের নাম কীভাবে তৈরি হবে
+    fields: # প্রতিটি টুলের জন্য কী কী তথ্য থাকবে
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Download Link", name: "download_link", widget: "string" }
+      - { label: "Telegram Link", name: "telegram_link", widget: "string" }
+      - { label: "YouTube Video ID", name: "youtube_id", widget: "string" }
