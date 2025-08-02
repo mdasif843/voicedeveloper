@@ -2,7 +2,7 @@
 
 backend:
   name: github
-  repo: your-username/your-repository-name # এখানে আপনার GitHub ইউজারনেম/রিপোজিটরির নাম দিন
+  repo: mdasif843/voicedevelope # এখানে আপনার GitHub ইউজারনেম/রিপোজিটরির নাম দিন
   branch: main # কোন ব্রাঞ্চে কনটেন্ট সেভ হবে
 
 media_folder: "assets/images" # ছবি আপলোড করলে কোথায় সেভ হবে
