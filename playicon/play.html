@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Play Button to Image</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Styles --- */
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f2f5;
+            padding: 20px;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1c1e21;
+            margin-bottom: 24px;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .play-buttons {
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* Removes default padding */
+        }
+
+        .play-buttons li {
+            padding: 2px;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            background-color: #f8f8f8;
+        }
+        
+        .play-buttons li:hover {
+            transform: scale(1.1);
+            border-color: #cccccc;
+        }
+
+        .play-buttons li.selected {
+            border-color: #007bff;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .play-buttons img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: block;
+        }
+
+        .image-editor {
+            margin-top: 20px;
+            border: 2px dashed #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        #imageLoader {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background-color: #fff;
+        }
+
+        #imageCanvas {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 8px;
+            display: none; /* Initially hidden */
+        }
+
+        #downloadBtn {
+            margin-top: 25px;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(45deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: none; /* Initially hidden */
+        }
+
+        #downloadBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        #downloadBtn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ছবিতে প্লে বাটন যোগ করুন</h1>
+        <p>একটি প্লে বাটন বেছে নিন:</p>
+        <ul class="play-buttons">
+            <!-- Buttons are loaded from the local 'icons' folder -->
+            <li class="selected"><img src="icons/1.png" alt="Play Button 1" class="play-btn-option" data-btn-src="icons/1.png"></li>
+            <li><img src="icons/2.png" alt="Play Button 2" class="play-btn-option" data-btn-src="icons/2.png"></li>
+            <li><img src="icons/3.png" alt="Play Button 3" class="play-btn-option" data-btn-src="icons/3.png"></li>
+            <li><img src="icons/4.png" alt="Play Button 4" class="play-btn-option" data-btn-src="icons/4.png"></li>
+            <li><img src="icons/5.png" alt="Play Button 5" class="play-btn-option" data-btn-src="icons/5.png"></li>
+            <li><img src="icons/6.png" alt="Play Button 6" class="play-btn-option" data-btn-src="icons/6.png"></li>
+            <li><img src="icons/7.png" alt="Play Button 7" class="play-btn-option" data-btn-src="icons/7.png"></li>
+            <li><img src="icons/8.png" alt="Play Button 8" class="play-btn-option" data-btn-src="icons/8.png"></li>
+            <li><img src="icons/9.png" alt="Play Button 9" class="play-btn-option" data-btn-src="icons/9.png"></li>
+            <li><img src="icons/10.png" alt="Play Button 10" class="play-btn-option" data-btn-src="icons/10.png"></li>
+            <li><img src="icons/11.png" alt="Play Button 11" class="play-btn-option" data-btn-src="icons/11.png"></li>
+            <li><img src="icons/12.png" alt="Play Button 12" class="play-btn-option" data-btn-src="icons/12.png"></li>
+            <li><img src="icons/13.png" alt="Play Button 13" class="play-btn-option" data-btn-src="icons/13.png"></li>
+            <li><img src="icons/14.png" alt="Play Button 14" class="play-btn-option" data-btn-src="icons/14.png"></li>
+            <li><img src="icons/15.png" alt="Play Button 15" class="play-btn-option" data-btn-src="icons/15.png"></li>
+        </ul>
+
+        <div class="image-editor">
+            <p>আপনার ছবিটি বেছে নিন:</p>
+            <input type="file" id="imageLoader" accept="image/*">
+            <canvas id="imageCanvas"></canvas>
+        </div>
+
+        <button id="downloadBtn" disabled>ছবি ডাউনলোড করুন</button>
+    </div>
+
+    <script>
+        // --- JavaScript Logic ---
+        const imageLoader = document.getElementById('imageLoader');
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const playButtonItems = document.querySelectorAll('.play-buttons li');
+
+        let userImage = null;
+        let playButtonImage = new Image();
+        
+        // Main function to draw the image on the canvas
+        function drawImageWithPlayButton() {
+            if (!userImage || !playButtonImage.src || !userImage.complete || !playButtonImage.complete) {
+                return;
+            }
+
+            canvas.width = userImage.width;
+            canvas.height = userImage.height;
+            ctx.drawImage(userImage, 0, 0);
+
+            const playBtnSize = Math.max(60, canvas.width * 0.20); 
+            const x = (canvas.width - playBtnSize) / 2;
+            const y = (canvas.height - playBtnSize) / 2;
+            
+            ctx.drawImage(playButtonImage, x, y, playBtnSize, playBtnSize);
+            
+            canvas.style.display = 'block';
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.disabled = false;
+        }
+        
+        playButtonImage.onload = drawImageWithPlayButton;
+        
+        playButtonImage.onerror = () => {
+            console.error("Could not load play button image:", playButtonImage.src);
+            alert("দুঃখিত, প্লে বাটন ছবিটি লোড করা যাচ্ছে না।");
+        };
+
+        imageLoader.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    userImage = new Image();
+                    userImage.onload = drawImageWithPlayButton;
+                    userImage.src = event.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        playButtonItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelector('.play-buttons li.selected')?.classList.remove('selected');
+                e.currentTarget.classList.add('selected');
+                
+                const clickedImg = e.currentTarget.querySelector('img');
+                playButtonImage.src = clickedImg.dataset.btnSrc;
+            });
+        });
+
+        // --- UPDATED DOWNLOAD LOGIC ---
+        downloadBtn.addEventListener('click', () => {
+            if (!userImage) {
+                alert("অনুগ্রহ করে প্রথমে একটি ছবি আপলোড করুন!");
+                return;
+            }
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.download = 'image-with-play-button.png';
+            link.href = canvas.toDataURL('image/png');
+            
+            // Append the link to the body, click it, and then remove it
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Initialize with the default selected play button
+        const defaultButton = document.querySelector('.play-buttons li.selected img');
+        if (defaultButton) {
+            playButtonImage.src = defaultButton.dataset.btnSrc;
+        }
+
+    </script>
+</body>
+</html>
