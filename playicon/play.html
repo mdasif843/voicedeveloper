@@ -127,6 +127,16 @@
             transform: none;
             box-shadow: none;
         }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffeeba;
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
     </style>
 </head>
@@ -134,11 +144,16 @@
 
     <div class="container">
         <h1>ছবিতে প্লে বাটন যোগ করুন</h1>
+        
+        <div class="warning">
+            <strong>বিশেষ দ্রষ্টব্য:</strong> প্লে-বাটন আইকনগুলো একটি অনলাইন সার্ভার থেকে লোড করা হচ্ছে। ডাউনলোড করার জন্য আপনার ইন্টারনেট সংযোগ চালু রাখতে হবে।
+        </div>
+
         <p>একটি প্লে বাটন বেছে নিন:</p>
         <ul class="play-buttons">
-            <!-- Buttons are loaded from the local 'icons' folder -->
-            <li class="selected"><img src="/playicon/play.html" alt="Play Button 1" class="play-btn-option" data-btn-src="/playicon/play.html"></li>
-           
+            <!-- Buttons are now loaded from a reliable online source that allows cross-origin requests -->
+            <li class="selected"><img src="https://i.ibb.co/QvxRQtWH/1.png" alt="Play Button 1" class="play-btn-option" data-btn-src="https://i.ibb.co/QvxRQtWH/1.png"></li>
+            
         </ul>
 
         <div class="image-editor">
@@ -160,6 +175,9 @@
 
         let userImage = null;
         let playButtonImage = new Image();
+        
+        // This is crucial for loading images from another domain (like i.ibb.co) onto the canvas
+        playButtonImage.crossOrigin = "Anonymous";
         
         // Main function to draw the image on the canvas
         function drawImageWithPlayButton() {
@@ -186,7 +204,7 @@
         
         playButtonImage.onerror = () => {
             console.error("Could not load play button image:", playButtonImage.src);
-            alert("দুঃখিত, প্লে বাটন ছবিটি লোড করা যাচ্ছে না।");
+            alert("দুঃখিত, প্লে বাটন ছবিটি লোড করা যাচ্ছে না। আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।");
         };
 
         imageLoader.addEventListener('change', (e) => {
@@ -211,21 +229,26 @@
             });
         });
 
-        // --- UPDATED DOWNLOAD LOGIC ---
+        // --- MORE ROBUST DOWNLOAD LOGIC ---
         downloadBtn.addEventListener('click', () => {
             if (!userImage) {
                 alert("অনুগ্রহ করে প্রথমে একটি ছবি আপলোড করুন!");
                 return;
             }
-            // Create a temporary link element
-            const link = document.createElement('a');
-            link.download = 'image-with-play-button.png';
-            link.href = canvas.toDataURL('image/png');
-            
-            // Append the link to the body, click it, and then remove it
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            try {
+                const link = document.createElement('a');
+                link.download = 'image-with-play-button.png';
+                link.href = canvas.toDataURL('image/png');
+                link.target = '_blank'; // Helps in some browsers
+
+                // Append the link to the body, click it, and then remove it
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error("Download failed:", error);
+                alert("দুঃখিত, ছবিটি ডাউনলোড করা সম্ভব হচ্ছে না। ব্রাউজারের নিরাপত্তাজনিত কারণে এই সমস্যা হতে পারে।");
+            }
         });
 
         // Initialize with the default selected play button
@@ -237,3 +260,4 @@
     </script>
 </body>
 </html>
+
