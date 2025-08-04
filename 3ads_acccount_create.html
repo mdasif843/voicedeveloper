@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BM Remove Tool - Voice Developer</title>
+    <title>3 Ads Account Creator - Voice Developer</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,13 +18,25 @@
 
     <style>
         /* কাস্টম স্টাইল */
+        :root {
+            --bg-color: #020617;
+            --primary-color: #22d3ee;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html {
+            height: 100%;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #020617; /* প্রধান ডার্ক ব্যাকগ্রাউন্ড */
+            background-color: var(--bg-color);
             color: #E2E8F0;
             overflow-x: hidden;
-            /* ফুটারের জন্য জায়গা তৈরি করতে প্যাডিং */
-            padding-bottom: 80px; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
         }
         
         /* অরোরা ব্যাকগ্রাউন্ড ইফেক্ট */
@@ -52,7 +64,7 @@
         }
         
         .logo-accent {
-            fill: #22d3ee;
+            fill: var(--primary-color);
         }
 
         /* অ্যানিমেটেড গ্র্যাডিয়েন্ট টেক্সট */
@@ -64,20 +76,18 @@
             animation: text-shine 8s linear infinite;
         }
         @keyframes text-shine {
-            to {
-                background-position: -250% center;
-            }
+            to { background-position: -250% center; }
         }
         
         /* টুল কন্টেইনার */
         .tool-container {
-            background-color: rgba(30, 41, 59, 0.5);
+            background-color: var(--card-bg);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .download-button {
-            background-color: #22d3ee;
+            background-color: var(--primary-color);
             color: #020617;
             transition: all 0.3s ease;
         }
@@ -89,25 +99,21 @@
 
         .telegram-button {
             background-color: transparent;
-            border: 1px solid #22d3ee;
-            color: #22d3ee;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
             transition: all 0.3s ease;
         }
         .telegram-button:hover {
-            background-color: #22d3ee;
+            background-color: var(--primary-color);
             color: #020617;
         }
         
         /* ফুটার স্টাইল */
         .footer-bg {
-            background-color: rgba(2, 6, 23, 0.8);
+            background-color: rgba(2, 6, 23, 0.5);
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 50;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto; /* ফুটারকে নিচে রাখার জন্য */
         }
 
         /* রেসপন্সিভ ইউটিউব ভিডিও */
@@ -117,6 +123,7 @@
             height: 0;
             overflow: hidden;
             border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
         }
         .video-wrapper iframe {
             position: absolute;
@@ -141,7 +148,7 @@
                 </a>
                 <div class="hidden md:flex items-center space-x-2">
                     <a href="#" class="text-sm font-semibold py-2 px-4 rounded-md hover:bg-white/10 transition-colors">Login</a>
-                    <a href="#" class="text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 py-2 px-4 rounded-md transition-colors">Register</a>
+                    <a href="join.html" class="text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-900 py-2 px-4 rounded-md transition-colors">Join Now</a>
                 </div>
                 <button class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
             </div>
@@ -151,9 +158,10 @@
     <main class="main-container px-4 relative z-10 pt-32 pb-16">
         <!-- টুল কন্টেন্ট -->
         <div class="tool-container rounded-2xl shadow-2xl overflow-hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <!-- বাম পাশ: ইউটিউব ভিডিও -->
                 <div class="p-6">
+                    <h2 class="text-2xl font-bold text-center mb-4 text-cyan-400">কিভাবে টুলসটি ব্যবহার করবেন</h2>
                     <div class="video-wrapper">
                         <iframe 
                             src="https://www.youtube.com/embed/CT653i0epx8" 
@@ -168,23 +176,23 @@
                 <!-- ডান পাশ: টেক্সট এবং বাটন -->
                 <div class="p-8 flex flex-col justify-center">
                     <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-                        BM Remove <span class="gradient-text">Tool</span>
+                        3 Ads Account <span class="gradient-text">Creator</span>
                     </h1>
                     <p class="mt-4 text-slate-300 leading-relaxed">
-                        এই শক্তিশালী টুলটি ব্যবহার করে যেকোনো ছবির ব্যাকগ্রাউন্ড মাত্র এক ক্লিকেই রিমুভ করুন। আমাদের AI প্রযুক্তি আপনার কাজকে আরও সহজ এবং দ্রুত করে তুলবে।
+                        আমাদের এই অটোমেটেড টুলটি ব্যবহার করে খুব সহজেই এবং দ্রুততার সাথে তিনটি ফেসবুক অ্যাডস অ্যাকাউন্ট তৈরি করুন। এটি আপনার সময় বাঁচাবে এবং কাজের গতি বাড়াবে।
                     </p>
                     
                     <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                        <a href="https://drive.google.com/file/d/1Iu0C-HuGnU_Gh8beqJmZmsCZMMQygNt9/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-button font-bold py-3 px-8 rounded-full text-center">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="download-button font-bold py-3 px-8 rounded-full text-center">
                             <i class="fas fa-download mr-2"></i>
-                            Download Now
+                            Download Tool
                         </a>
-                        <a href="https://t.me/theearningproject1" target="_blank" rel="noopener noreferrer" class="telegram-button font-bold py-3 px-8 rounded-full text-center">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="telegram-button font-bold py-3 px-8 rounded-full text-center">
                            <i class="fab fa-telegram-plane mr-2"></i>
                            Join Telegram
                         </a>
                     </div>
-                    <p class="text-slate-500 text-sm mt-4">Latest Version: 2.0.1</p>
+                    <p class="text-slate-500 text-sm mt-4">Latest Version: 1.0.0</p>
                 </div>
             </div>
         </div>
