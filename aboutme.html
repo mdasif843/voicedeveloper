@@ -18,13 +18,23 @@
 
     <style>
         /* কাস্টম স্টাইল */
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #020617; /* প্রধান ডার্ক ব্যাকগ্রাউন্ড */
             color: #E2E8F0;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         
+        main {
+            flex-grow: 1; /* মূল কন্টেন্টকে বড় করে ফুটারকে নিচে রাখার জন্য */
+        }
+
         /* অরোরা ব্যাকগ্রাউন্ড ইফেক্ট */
         .aurora-bg {
             position: fixed;
@@ -159,7 +169,7 @@
                     <div class="mt-10 border-t border-slate-700 pt-8">
                         <h3 class="text-2xl font-bold mb-4">Let's Work Together</h3>
                         <p class="text-slate-300 mb-6">আপনার যদি কোনো প্রজেক্ট বা আইডিয়া থাকে, তবে আমার সাথে যোগাযোগ করতে পারেন। আমি আপনার আইডিয়াকে বাস্তবে রূপ দিতে সাহায্য করতে প্রস্তুত।</p>
-                        <a href="measifmia843@gmail.com" class="inline-block bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold py-3 px-6 rounded-full transition-transform hover:scale-105">
+                        <a href="mailto:measifmia843@gmail.com" class="inline-block bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold py-3 px-6 rounded-full transition-transform hover:scale-105">
                             Contact Me <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -169,7 +179,7 @@
         </div>
     </main>
 
-    <footer class="footer-bg p-6 mt-12">
+    <footer class="footer-bg p-6">
         <div class="main-container text-center text-slate-500">
             <p>&copy; 2024 VoiceDev. All Rights Reserved.</p>
         </div>
