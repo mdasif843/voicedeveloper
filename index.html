@@ -7,12 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <!-- Firebase SDK -->
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        window.__firebase__ = { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged };
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        window.__firebase__ = { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -76,7 +76,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
-<!-- ══ FIREBASE FIRST-TIME SETUP ══ -->
 <div id="firebase-setup">
     <div class="setup-card text-center">
         <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-5">
@@ -105,10 +104,8 @@
     </div>
 </div>
 
-<!-- ══ TOAST ══ -->
 <div id="toast" class="toast"></div>
 
-<!-- ══ HEADER ══ -->
 <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
         <a href="#" class="text-2xl md:text-3xl font-extrabold gradient-text nav-link flex items-center gap-2" data-page="home">
@@ -147,7 +144,6 @@
 
 <main class="flex-grow">
 
-<!-- ════════ HOME ════════ -->
 <div id="page-home" class="page-content active">
     <section class="container mx-auto px-6 py-16 md:py-24 overflow-hidden relative">
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-200 rounded-full blur-3xl opacity-30 -z-10 translate-x-1/2 -translate-y-1/2"></div>
@@ -220,7 +216,6 @@
     </section>
 </div>
 
-<!-- ════════ COURSES ════════ -->
 <div id="page-courses" class="page-content">
     <section class="py-20">
         <div class="container mx-auto px-6">
@@ -233,10 +228,8 @@
     </section>
 </div>
 
-<!-- ════════ DETAILS ════════ -->
 <div id="page-details" class="page-content"><div id="details-content"></div></div>
 
-<!-- ════════ PAYMENT ════════ -->
 <div id="page-payment" class="page-content">
     <section class="py-20 bg-slate-50">
         <div class="container mx-auto px-6 max-w-5xl">
@@ -278,7 +271,6 @@
     </section>
 </div>
 
-<!-- ════════ TOOLS ════════ -->
 <div id="page-tools" class="page-content">
     <section class="py-20">
         <div class="container mx-auto px-6">
@@ -294,7 +286,6 @@
     </section>
 </div>
 
-<!-- ════════ UPDATES ════════ -->
 <div id="page-updates" class="page-content">
     <section class="py-10 bg-slate-100 min-h-screen">
         <div class="container mx-auto px-4">
@@ -321,7 +312,6 @@
     </section>
 </div>
 
-<!-- ════════ CONDITIONS ════════ -->
 <div id="page-conditions" class="page-content">
     <section class="py-20 container mx-auto px-6">
         <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -333,7 +323,6 @@
     </section>
 </div>
 
-<!-- ════════ CONTACT ════════ -->
 <div id="page-contact" class="page-content">
     <section class="py-20 container mx-auto px-6 max-w-2xl">
         <div class="text-center mb-12"><h1 class="text-3xl font-bold text-slate-900">যোগাযোগ করুন</h1></div>
@@ -343,7 +332,6 @@
 
 </main>
 
-<!-- FOOTER -->
 <footer class="bg-slate-900 text-slate-400 py-12 mt-auto">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 border-b border-slate-800 pb-8">
@@ -370,7 +358,6 @@
     </div>
 </footer>
 
-<!-- SUCCESS MODAL -->
 <div id="success-modal" class="moverlay">
     <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
         <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="check" class="w-10 h-10"></i></div>
@@ -380,7 +367,6 @@
     </div>
 </div>
 
-<!-- ADMIN LOGIN -->
 <div id="admin-login" class="moverlay">
     <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl border border-indigo-100">
         <div class="text-center mb-6">
@@ -395,7 +381,6 @@
     </div>
 </div>
 
-<!-- ════════════════ ADMIN PANEL ════════════════ -->
 <div id="admin-overlay">
     <div class="admin-sidebar">
         <div class="px-5 py-5 border-b border-indigo-900/50">
@@ -426,14 +411,12 @@
     </div>
 
     <div class="admin-main">
-        <!-- DASHBOARD -->
         <div id="as-dash" class="asec active">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">ড্যাশবোর্ড</h2></div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5" id="dash-stats"></div>
             <div class="acard"><p class="text-indigo-300 text-sm font-bold mb-3">সাম্প্রতিক অর্ডার</p><div id="dash-orders"></div></div>
         </div>
 
-        <!-- HERO -->
         <div id="as-hero" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">হোম পেজ সম্পাদনা</h2></div>
             <div class="space-y-3 max-w-2xl">
@@ -447,7 +430,6 @@
             </div>
         </div>
 
-        <!-- COURSES LIST -->
         <div id="as-courses" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
                 <h2 class="text-xl font-bold text-white">কোর্স ম্যানেজমেন্ট</h2>
@@ -456,7 +438,6 @@
             <div id="admin-course-list" class="space-y-2"></div>
         </div>
 
-        <!-- ADD/EDIT COURSE -->
         <div id="as-add-course" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="course-form-h">নতুন কোর্স যোগ করুন</h2></div>
             <div class="space-y-3 max-w-2xl">
@@ -471,7 +452,6 @@
             </div>
         </div>
 
-        <!-- TOOLS LIST -->
         <div id="as-tools" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
                 <h2 class="text-xl font-bold text-white">টুলস ম্যানেজমেন্ট</h2>
@@ -480,7 +460,6 @@
             <div id="admin-tool-list" class="space-y-2"></div>
         </div>
 
-        <!-- ADD TOOL -->
         <div id="as-add-tool" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="tool-form-h">নতুন টুল যোগ করুন</h2></div>
             <div class="space-y-3 max-w-2xl">
@@ -498,7 +477,6 @@
             </div>
         </div>
 
-        <!-- POSTS -->
         <div id="as-posts" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">আপডেট পোস্ট</h2></div>
             <div class="max-w-2xl space-y-3 mb-5">
@@ -533,7 +511,6 @@
             </div>
         </div>
 
-        <!-- REVIEWS -->
         <div id="as-reviews" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">রিভিউ</h2></div>
             <div class="space-y-3 max-w-2xl mb-5">
@@ -545,7 +522,6 @@
             <div id="rv-admin-list" class="space-y-2 max-w-2xl"></div>
         </div>
 
-        <!-- ORDERS -->
         <div id="as-orders" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">অর্ডারসমূহ</h2></div>
             <div class="flex gap-3 mb-4">
@@ -556,7 +532,6 @@
             <div id="orders-list" class="space-y-2 max-w-2xl"></div>
         </div>
 
-        <!-- PAYMENT METHODS -->
         <div id="as-pm-settings" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">পেমেন্ট মেথড</h2></div>
             <div id="pm-admin-list" class="space-y-2 max-w-2xl mb-5"></div>
@@ -568,7 +543,6 @@
             </div>
         </div>
 
-        <!-- SITE SETTINGS -->
         <div id="as-site-settings" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">সাইট সেটিংস</h2></div>
             <div class="space-y-3 max-w-2xl">
@@ -584,7 +558,6 @@
             </div>
         </div>
 
-        <!-- CONDITIONS -->
         <div id="as-cond-mgr" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">শর্তাবলী সম্পাদনা</h2></div>
             <div id="cond-admin-list" class="space-y-2 max-w-2xl mb-4"></div>
@@ -597,7 +570,6 @@
             </div>
         </div>
 
-        <!-- CONTACT -->
         <div id="as-contact-mgr" class="asec">
             <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">যোগাযোগ তথ্য</h2></div>
             <div id="contact-admin-list" class="space-y-2 max-w-2xl mb-4"></div>
@@ -612,12 +584,11 @@
     </div>
 </div>
 
-<!-- ════════════════ JAVASCRIPT ════════════════ -->
 <script type="module">
 // ══════════════════════════════════════════
 // FIREBASE INIT
 // ══════════════════════════════════════════
-const { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } = window.__firebase__;
+const { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } = window.__firebase__;
 
 let db, auth, app;
 
@@ -664,15 +635,14 @@ window.saveFirebaseConfig = async () => {
     if (!initFirebase(cfg)) { msg.textContent = '❌ Firebase Config ভুল!'; return; }
 
     try {
+        msg.textContent = 'অ্যাকাউন্ট চেক করা হচ্ছে...';
         // Try login (in case user already exists)
-        try { await signInWithEmailAndPassword(auth, email, pw); }
-        catch {
-            // Create user via REST (since createUserWithEmailAndPassword needs import)
-            const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${cfg.apiKey}`, {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ email, password:pw, returnSecureToken:true })
-            });
-            if (!res.ok) throw new Error('User creation failed');
+        try { 
+            await signInWithEmailAndPassword(auth, email, pw); 
+        }
+        catch (e) {
+            // Create user
+            await createUserWithEmailAndPassword(auth, email, pw);
         }
 
         localStorage.setItem('fb_cfg', JSON.stringify(cfg));
