@@ -1,1329 +1,1616 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MethodMaster - আধুনিক ডিজিটাল লার্নিং প্ল্যাটফর্ম</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        window.__firebase__ = { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword };
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; scroll-behavior: smooth; }
-        .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .gradient-text { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass-effect { background: rgba(255,255,255,.95); backdrop-filter: blur(10px); }
-        .page-content { display: none; animation: fadeIn .4s cubic-bezier(.4,0,.2,1); }
-        .page-content.active { display: block; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-        .nav-menu-link.active-link { color:#7c3aed; font-weight:700; position:relative; }
-        .nav-menu-link.active-link::after { content:''; position:absolute; bottom:-4px; left:0; width:100%; height:2px; background:#7c3aed; border-radius:2px; }
-
-        /* TELEGRAM STYLE */
-        .tgwrap { max-width:660px; margin:0 auto; }
-        .tgpost { background:#fff; border-radius:14px; box-shadow:0 2px 14px rgba(79,70,229,.08); border:1px solid #e5e7eb; overflow:hidden; margin-bottom:14px; animation:fadeIn .4s; }
-        .tghead { display:flex; align-items:center; gap:11px; padding:13px 15px 8px; }
-        .tgava { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#4f46e5,#7c3aed); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:16px; flex-shrink:0; }
-        .tgbody { padding:2px 15px 12px; font-size:14px; line-height:1.78; color:#374151; white-space:pre-wrap; }
-        .tglink { margin:6px 15px 12px; border:1px solid #e0e7ff; border-radius:9px; padding:9px 13px; background:#f5f3ff; display:block; text-decoration:none; }
-        .tglink:hover { background:#ede9fe; }
-        .tgtag { display:inline-block; background:#ede9fe; color:#4f46e5; font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; margin:2px; }
-
-        /* TOOLS */
-        .tool-card { transition:transform .3s, box-shadow .3s; }
-        .tool-card:hover { transform:translateY(-5px); box-shadow:0 14px 40px rgba(79,70,229,.13); }
-
-        /* ADMIN */
-        #admin-overlay { position:fixed; inset:0; background:rgba(10,5,30,.88); backdrop-filter:blur(6px); z-index:9999; display:none; align-items:stretch; justify-content:flex-end; }
-        #admin-overlay.open { display:flex; animation:aFade .3s; }
-        @keyframes aFade { from{opacity:0}to{opacity:1} }
-        .admin-sidebar { width:255px; background:#1e1b4b; color:#e0e7ff; display:flex; flex-direction:column; box-shadow:-8px 0 40px rgba(79,70,229,.45); }
-        .admin-main { flex:1; background:#17144a; overflow-y:auto; display:flex; flex-direction:column; }
-        .asec { display:none; flex-direction:column; flex:1; padding:26px; }
-        .asec.active { display:flex; }
-        .anav { padding:10px 18px; cursor:pointer; transition:background .2s,color .2s; border-left:3px solid transparent; font-size:13px; font-weight:600; display:flex; align-items:center; gap:9px; color:#a5b4fc; }
-        .anav:hover,.anav.active { background:#2e2a7a; color:#fff; border-left-color:#818cf8; }
-        .ai { width:100%; background:#1e1b4b; border:1.5px solid #3730a3; color:#e0e7ff; border-radius:8px; padding:9px 13px; font-size:13px; font-family:'Hind Siliguri',sans-serif; outline:none; transition:border .2s; }
-        .ai:focus { border-color:#818cf8; }
-        .al { font-size:11px; font-weight:700; color:#a5b4fc; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; display:block; }
-        .ab { padding:9px 16px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; transition:all .2s; border:none; font-family:'Hind Siliguri',sans-serif; }
-        .abp { background:linear-gradient(135deg,#4f46e5,#7c3aed); color:#fff; }
-        .abp:hover { opacity:.85; }
-        .abd { background:#7f1d1d; color:#fca5a5; }
-        .abd:hover { background:#991b1b; }
-        .abg { background:#2e2a7a; color:#a5b4fc; }
-        .abg:hover { background:#3730a3; color:#fff; }
-        .acard { background:#1e1b4b; border:1.5px solid #3730a3; border-radius:10px; padding:14px; margin-bottom:10px; }
-        .atag { background:#312e81; color:#a5b4fc; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; }
-        .toast { position:fixed; bottom:22px; right:22px; z-index:99999; background:#14532d; color:#bbf7d0; border:1px solid #16a34a; padding:11px 18px; border-radius:9px; font-weight:600; font-size:13px; display:none; font-family:'Hind Siliguri',sans-serif; }
-        .toast.show { display:block; animation:tIn .3s ease; }
-        .toast.err { background:#7f1d1d; color:#fca5a5; border-color:#dc2626; }
-        @keyframes tIn { from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1} }
-        .moverlay { position:fixed; inset:0; background:rgba(10,5,30,.82); backdrop-filter:blur(4px); z-index:99998; display:none; align-items:center; justify-content:center; padding:20px; }
-        .moverlay.open { display:flex; animation:aFade .25s; }
-
-        /* Firebase setup box */
-        #firebase-setup { position:fixed; inset:0; background:#0f0a1e; z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px; }
-        .setup-card { background:#1e1b4b; border:2px solid #3730a3; border-radius:20px; padding:32px; max-width:500px; width:100%; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Developer - আধুনিক ডিজিটাল লার্নিং</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Hind Siliguri','Inter',sans-serif;scroll-behavior:smooth;}
+.gradient-bg{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);}
+.gradient-text{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.glass-effect{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);}
+.page-content{display:none;animation:fadeIn .4s cubic-bezier(.4,0,.2,1);}
+.page-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+.nav-menu-link.active-link{color:#7c3aed;font-weight:700;position:relative;}
+.nav-menu-link.active-link::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;background:#7c3aed;border-radius:2px;}
+/* Telegram style */
+.tgwrap{max-width:660px;margin:0 auto;}
+.tgpost{background:#fff;border-radius:14px;box-shadow:0 2px 14px rgba(79,70,229,.08);border:1px solid #e5e7eb;overflow:hidden;margin-bottom:14px;}
+.tghead{display:flex;align-items:center;gap:11px;padding:13px 15px 8px;}
+.tgava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0;}
+.tgbody{padding:2px 15px 12px;font-size:14px;line-height:1.78;color:#374151;white-space:pre-wrap;}
+.tglink{margin:6px 15px 12px;border:1px solid #e0e7ff;border-radius:9px;padding:9px 13px;background:#f5f3ff;display:block;text-decoration:none;}
+.tgtag{display:inline-block;background:#ede9fe;color:#4f46e5;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin:2px;}
+/* Tool cards */
+.tool-card{transition:transform .3s,box-shadow .3s;}
+.tool-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(79,70,229,.13);}
+/* Admin */
+#admin-overlay{position:fixed;inset:0;background:rgba(10,5,30,.88);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:stretch;justify-content:flex-end;}
+#admin-overlay.open{display:flex;animation:aFade .3s;}
+@keyframes aFade{from{opacity:0;}to{opacity:1;}}
+.asidebar{width:255px;background:#1e1b4b;color:#e0e7ff;display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(79,70,229,.45);}
+.amain{flex:1;background:#17144a;overflow-y:auto;display:flex;flex-direction:column;}
+.asec{display:none;flex-direction:column;flex:1;padding:26px;}
+.asec.active{display:flex;}
+.anav{padding:10px 18px;cursor:pointer;transition:background .2s,color .2s;border-left:3px solid transparent;font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px;color:#a5b4fc;}
+.anav:hover,.anav.active{background:#2e2a7a;color:#fff;border-left-color:#818cf8;}
+.ai{width:100%;background:#1e1b4b;border:1.5px solid #3730a3;color:#e0e7ff;border-radius:8px;padding:9px 13px;font-size:13px;font-family:'Hind Siliguri',sans-serif;outline:none;transition:border .2s;}
+.ai:focus{border-color:#818cf8;}
+.al{font-size:11px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block;}
+.ab{padding:9px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;transition:all .2s;border:none;font-family:'Hind Siliguri',sans-serif;}
+.abp{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;}.abp:hover{opacity:.85;}
+.abd{background:#7f1d1d;color:#fca5a5;}.abd:hover{background:#991b1b;}
+.abg{background:#2e2a7a;color:#a5b4fc;}.abg:hover{background:#3730a3;color:#fff;}
+.acard{background:#1e1b4b;border:1.5px solid #3730a3;border-radius:10px;padding:14px;margin-bottom:10px;}
+.atag{background:#312e81;color:#a5b4fc;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+/* Toast */
+.toast-el{position:fixed;bottom:22px;right:22px;z-index:99999;background:#14532d;color:#bbf7d0;border:1px solid #16a34a;padding:11px 18px;border-radius:9px;font-weight:600;font-size:13px;display:none;font-family:'Hind Siliguri',sans-serif;}
+.toast-el.show{display:block;animation:tIn .3s ease;}
+.toast-el.err{background:#7f1d1d;color:#fca5a5;border-color:#dc2626;}
+@keyframes tIn{from{transform:translateY(18px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+/* Modal overlay */
+.moverlay{position:fixed;inset:0;background:rgba(10,5,30,.82);backdrop-filter:blur(4px);z-index:99998;display:none;align-items:center;justify-content:center;padding:20px;}
+.moverlay.open{display:flex;animation:aFade .25s;}
+/* Loading screen */
+#loading-screen{position:fixed;inset:0;background:#fff;z-index:99990;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
-<div id="firebase-setup">
-    <div class="setup-card text-center">
-        <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-5">
-            <i data-lucide="flame" class="w-8 h-8 text-white"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-white mb-2">MethodMaster সেটআপ</h2>
-        <p class="text-indigo-300 text-sm mb-6">প্রথমবার চালানোর জন্য Firebase config দিন। একবার দিলে সবসময় কাজ করবে।</p>
+<!-- ══ TOAST ══ -->
+<div class="toast-el" id="toast-el"></div>
 
-        <div class="space-y-3 text-left mb-5">
-            <div><label class="al">Firebase API Key</label><input id="setup-apiKey" class="ai" placeholder="AIza..."></div>
-            <div><label class="al">Auth Domain</label><input id="setup-authDomain" class="ai" placeholder="your-app.firebaseapp.com"></div>
-            <div><label class="al">Project ID</label><input id="setup-projectId" class="ai" placeholder="your-app-id"></div>
-            <div><label class="al">Admin Email</label><input id="setup-email" class="ai" placeholder="admin@yoursite.com"></div>
-            <div><label class="al">Admin Password</label><input type="password" id="setup-password" class="ai" placeholder="শক্তিশালী পাসওয়ার্ড"></div>
-        </div>
-
-        <button onclick="saveFirebaseConfig()" class="ab abp w-full flex items-center justify-center gap-2">
-            <i data-lucide="rocket" class="w-4 h-4"></i> সেটআপ শুরু করুন
-        </button>
-        <div id="setup-msg" class="mt-3 text-xs text-indigo-400"></div>
-
-        <div class="mt-5 p-3 bg-indigo-900/50 rounded-xl text-left">
-            <p class="text-indigo-300 text-xs font-bold mb-1">কীভাবে Firebase config পাবেন?</p>
-            <p class="text-indigo-400 text-xs leading-relaxed">1. firebase.google.com → Console → New Project<br>2. Authentication → Enable Email/Password<br>3. Firestore Database → Create (production mode)<br>4. Project Settings → Your Apps → Web App → Config কপি করুন</p>
-        </div>
-    </div>
+<!-- ══ LOADING SCREEN (shows while Firebase loads) ══ -->
+<div id="loading-screen">
+  <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center">
+    <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+  </div>
+  <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+  <p class="text-slate-500 text-sm font-medium">লোড হচ্ছে...</p>
 </div>
 
-<div id="toast" class="toast"></div>
-
+<!-- ══ HEADER ══ -->
 <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
-    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" class="text-2xl md:text-3xl font-extrabold gradient-text nav-link flex items-center gap-2" data-page="home">
-            <i data-lucide="zap" class="w-8 h-8 text-indigo-600"></i>
-            <span id="site-name-header">MethodMaster</span>
-        </a>
-        <div class="hidden md:flex items-center space-x-7">
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="home">হোম</a>
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="courses">কোর্সসমূহ</a>
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="tools">টুলস</a>
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="updates">আপডেট</a>
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="conditions">শর্তাবলী</a>
-            <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="contact">যোগাযোগ</a>
-        </div>
-        <div class="hidden md:flex items-center space-x-3">
-            <a id="header-tg" href="#" target="_blank" class="flex items-center space-x-2 text-sky-500 font-semibold hover:text-sky-600 bg-sky-50 px-4 py-2 rounded-full text-sm">
-                <i data-lucide="send" class="w-4 h-4"></i><span>সাপোর্ট</span>
-            </a>
-            <button class="nav-link gradient-bg text-white px-6 py-2.5 rounded-full shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition font-semibold text-sm" data-page="courses">ব্রাউজ করুন</button>
-            <button onclick="openAdmin()" class="bg-indigo-950 text-indigo-300 px-3 py-2 rounded-full text-xs font-bold hover:bg-indigo-900 transition flex items-center gap-1.5">
-                <i data-lucide="settings" class="w-3.5 h-3.5"></i> অ্যাডমিন
-            </button>
-        </div>
-        <button id="menu-btn" class="md:hidden text-gray-700"><i data-lucide="menu" class="w-7 h-7"></i></button>
-    </nav>
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t absolute w-full left-0 shadow-xl z-40">
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="home">হোম</a>
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="courses">কোর্সসমূহ</a>
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="tools">টুলস</a>
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="updates">আপডেট</a>
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="conditions">শর্তাবলী</a>
-        <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 text-sm font-medium" data-page="contact">যোগাযোগ</a>
-        <button onclick="openAdmin()" class="block w-full text-left px-6 py-4 text-indigo-600 font-bold text-sm">⚙️ অ্যাডমিন</button>
+  <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#" class="text-2xl md:text-3xl font-extrabold gradient-text nav-link flex items-center gap-2" data-page="home">
+      <i data-lucide="zap" class="w-8 h-8 text-indigo-600"></i>
+      <span id="site-name-el">Voice Developer</span>
+    </a>
+    <div class="hidden md:flex items-center space-x-7">
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="home">হোম</a>
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="courses">কোর্সসমূহ</a>
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="tools">টুলস</a>
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="updates">আপডেট</a>
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="conditions">শর্তাবলী</a>
+      <a href="#" class="nav-link nav-menu-link text-gray-600 hover:text-indigo-600 transition font-medium" data-page="contact">যোগাযোগ</a>
     </div>
+    <div class="hidden md:flex items-center space-x-3">
+      <a id="header-tg" href="#" target="_blank" class="flex items-center space-x-2 text-sky-500 font-semibold hover:text-sky-600 bg-sky-50 px-4 py-2 rounded-full text-sm">
+        <i data-lucide="send" class="w-4 h-4"></i><span>সাপোর্ট</span>
+      </a>
+      <button class="nav-link gradient-bg text-white px-6 py-2.5 rounded-full shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 transition font-semibold text-sm" data-page="courses">ব্রাউজ করুন</button>
+    </div>
+    <button id="menu-btn" class="md:hidden text-gray-700"><i data-lucide="menu" class="w-7 h-7"></i></button>
+  </nav>
+  <div id="mobile-menu" class="hidden md:hidden bg-white border-t absolute w-full left-0 shadow-xl z-40">
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="home">হোম</a>
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="courses">কোর্সসমূহ</a>
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="tools">টুলস</a>
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="updates">আপডেট</a>
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 border-b text-sm font-medium" data-page="conditions">শর্তাবলী</a>
+    <a href="#" class="nav-link nav-menu-link block px-6 py-4 hover:bg-gray-50 text-sm font-medium" data-page="contact">যোগাযোগ</a>
+  </div>
 </header>
 
 <main class="flex-grow">
 
+<!-- ════ HOME ════ -->
 <div id="page-home" class="page-content active">
-    <section class="container mx-auto px-6 py-16 md:py-24 overflow-hidden relative">
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-200 rounded-full blur-3xl opacity-30 -z-10 translate-x-1/2 -translate-y-1/2"></div>
-        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-16">
-            <div class="text-center md:text-left z-10">
-                <div id="hero-badge" class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-indigo-100">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> লাইভ মেথড আপডেট ২০২৫
-                </div>
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-slate-900">
-                    <span id="hero-t1">দক্ষতা বাড়ান,</span><br>
-                    <span id="hero-t2" class="gradient-text">আয় করুন স্মার্টলি</span>
-                </h1>
-                <p id="hero-desc" class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">আমরা দিচ্ছি ১০০% পরীক্ষিত অনলাইন ইনকাম মেথড এবং প্রিমিয়াম রিসোর্স।</p>
-                <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                    <button class="nav-link gradient-bg text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-1 transition flex items-center justify-center gap-2" data-page="courses">
-                        <i data-lucide="play-circle" class="w-5 h-5"></i> কোর্স শুরু করুন
-                    </button>
-                    <button class="nav-link bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-slate-50 transition" data-page="contact">যোগাযোগ</button>
-                </div>
-                <div class="mt-10 flex items-center justify-center md:justify-start gap-6 text-sm text-slate-500 font-medium flex-wrap">
-                    <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-green-500 w-5 h-5"></i> লাইফটাইম এক্সেস</div>
-                    <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-green-500 w-5 h-5"></i> প্রিমিয়াম সাপোর্ট</div>
-                </div>
-            </div>
-            <div class="relative w-full max-w-lg mx-auto">
-                <div class="glass-effect p-8 rounded-3xl shadow-2xl border border-white/50">
-                    <div class="flex justify-between items-end mb-6">
-                        <div>
-                            <p id="chart-label" class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">স্টুডেন্ট আর্নিং রিপোর্ট</p>
-                            <h3 id="chart-amount" class="text-4xl font-black text-slate-800">৳১,২০,০০০+</h3>
-                        </div>
-                        <div class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-bold flex items-center">
-                            <i data-lucide="trending-up" class="w-4 h-4 mr-1"></i><span id="chart-growth">+২৮%</span>
-                        </div>
-                    </div>
-                    <div class="h-64 w-full"><canvas id="incomeChart"></canvas></div>
-                </div>
-                <div class="absolute -top-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-bounce">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
-                        <div><p class="text-xs text-gray-500 font-bold">রেটিং</p><p id="hero-rating" class="font-bold text-gray-800">৪.৯/৫</p></div>
-                    </div>
-                </div>
-            </div>
+  <section class="container mx-auto px-6 py-16 md:py-24 overflow-hidden relative">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-200 rounded-full blur-3xl opacity-30 -z-10 translate-x-1/2 -translate-y-1/2"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-16">
+      <div class="text-center md:text-left z-10">
+        <div id="hero-badge-el" class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-indigo-100">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> লাইভ মেথড আপডেট ২০২৫
         </div>
-    </section>
-
-    <section class="bg-white py-10 border-y border-indigo-50">
-        <div class="container mx-auto px-6"><div id="stats-bar" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div></div>
-    </section>
-
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16 max-w-2xl mx-auto">
-                <span class="text-indigo-600 font-bold text-sm tracking-widest uppercase">জনপ্রিয় মেথড</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold mt-2 mb-4 text-slate-900">সেরা স্কিলগুলো শিখুন</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="featured-grid"></div>
-            <div class="text-center mt-12">
-                <button class="nav-link border-2 border-indigo-600 text-indigo-600 px-10 py-3 rounded-full font-bold hover:bg-indigo-600 hover:text-white transition" data-page="courses">সবগুলো দেখুন</button>
-            </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-slate-900">
+          <span id="hero-t1-el">দক্ষতা বাড়ান,</span><br>
+          <span id="hero-t2-el" class="gradient-text">আয় করুন স্মার্টলি</span>
+        </h1>
+        <p id="hero-desc-el" class="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">আমরা দিচ্ছি ১০০% পরীক্ষিত অনলাইন ইনকাম মেথড এবং প্রিমিয়াম রিসোর্স। আজই জয়েন করুন আমাদের ৫০০০+ সফল মেম্বারদের কমিউনিটিতে।</p>
+        <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+          <button class="nav-link gradient-bg text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl hover:shadow-indigo-500/40 transform hover:-translate-y-1 transition duration-300 flex items-center justify-center gap-2" data-page="courses">
+            <i data-lucide="play-circle" class="w-5 h-5"></i> কোর্স শুরু করুন
+          </button>
+          <button class="nav-link bg-white text-slate-700 border border-slate-200 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-slate-50 transition duration-300" data-page="contact">যোগাযোগ করুন</button>
         </div>
-    </section>
-
-    <section class="py-20 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12"><h2 class="text-3xl font-extrabold text-slate-900">সফল স্টুডেন্টদের কথা</h2></div>
-            <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        <div class="mt-10 flex items-center justify-center md:justify-start gap-6 text-sm text-slate-500 font-medium flex-wrap">
+          <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-green-500 w-5 h-5"></i> লাইফটাইম এক্সেস</div>
+          <div class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-green-500 w-5 h-5"></i> প্রিমিয়াম সাপোর্ট</div>
         </div>
-    </section>
+      </div>
+      <div class="relative w-full max-w-lg mx-auto">
+        <div class="glass-effect p-8 rounded-3xl shadow-2xl border border-white/50 relative z-10">
+          <div class="flex justify-between items-end mb-6">
+            <div>
+              <p id="chart-label-el" class="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">স্টুডেন্ট আর্নিং রিপোর্ট</p>
+              <h3 id="chart-amount-el" class="text-4xl font-black text-slate-800">৳১,২০,০০০+</h3>
+            </div>
+            <div class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-bold flex items-center">
+              <i data-lucide="trending-up" class="w-4 h-4 mr-1"></i><span id="chart-growth-el">+২৮%</span>
+            </div>
+          </div>
+          <div class="h-64 w-full"><canvas id="incomeChart"></canvas></div>
+        </div>
+        <div class="absolute -top-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 animate-bounce">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i data-lucide="star" class="w-5 h-5 fill-current"></i></div>
+            <div><p class="text-xs text-gray-500 font-bold">রেটিং</p><p id="hero-rating-el" class="font-bold text-gray-800">৪.৯/৫</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="bg-white py-10 border-y border-indigo-50">
+    <div class="container mx-auto px-6">
+      <div id="stats-bar-el" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- Featured Courses -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-indigo-600 font-bold text-sm tracking-widest uppercase">জনপ্রিয় মেথড</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold mt-2 mb-4 text-slate-900">সেরা স্কিলগুলো শিখুন</h2>
+        <p class="text-slate-600">আমাদের সবচেয়ে জনপ্রিয় এবং কার্যকরী মেথডগুলো যা আপনাকে দ্রুত আয়ের পথে নিয়ে যাবে।</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="featured-grid-el"></div>
+      <div class="text-center mt-12">
+        <button class="nav-link border-2 border-indigo-600 text-indigo-600 px-10 py-3 rounded-full font-bold hover:bg-indigo-600 hover:text-white transition duration-300" data-page="courses">সবগুলো দেখুন</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="py-20">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-indigo-600 font-bold text-sm tracking-widest uppercase">সাফল্যের গল্প</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold mt-2 mb-4 text-slate-900">সফল স্টুডেন্টদের কথা</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="reviews-grid-el"></div>
+    </div>
+  </section>
 </div>
 
+<!-- ════ COURSES ════ -->
 <div id="page-courses" class="page-content">
-    <section class="py-20">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-14"><h1 class="text-4xl font-extrabold text-slate-900">আমাদের সকল কোর্স</h1></div>
-            <div id="cat-filter" class="flex flex-wrap justify-center gap-3 mb-10"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="all-courses-grid">
-                <div class="col-span-3 text-center py-16 text-slate-400"><i data-lucide="loader" class="w-8 h-8 mx-auto mb-2 animate-spin opacity-40"></i><p>লোড হচ্ছে...</p></div>
-            </div>
+  <section class="py-20">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-extrabold text-slate-900">আমাদের সকল কোর্স</h1>
+        <p class="text-slate-600 mt-3 text-lg">আপনার ক্যারিয়ার গড়তে সেরা কোর্সটি বেছে নিন</p>
+      </div>
+      <div id="cat-filter-el" class="flex flex-wrap justify-center gap-3 mb-10"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="all-courses-el">
+        <div class="col-span-3 text-center py-16 text-slate-400">
+          <div class="w-8 h-8 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p>লোড হচ্ছে...</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </div>
 
-<div id="page-details" class="page-content"><div id="details-content"></div></div>
+<!-- ════ DETAILS ════ -->
+<div id="page-details" class="page-content"><div id="details-content-el"></div></div>
 
+<!-- ════ PAYMENT ════ -->
 <div id="page-payment" class="page-content">
-    <section class="py-20 bg-slate-50">
-        <div class="container mx-auto px-6 max-w-5xl">
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-                <div class="md:flex">
-                    <div class="md:w-5/12 bg-slate-50 p-8 md:p-10 border-r border-slate-100">
-                        <h3 class="text-xl font-bold mb-6 text-slate-800">অর্ডার সামারি</h3>
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 shadow-sm">
-                            <p class="text-xs text-slate-500 font-bold uppercase mb-1">কোর্স নাম</p>
-                            <h4 id="pay-cname" class="font-bold text-lg text-indigo-700">—</h4>
-                            <div class="my-3 border-t border-dashed border-slate-200"></div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-slate-600 font-medium">মোট পেমেন্ট</span>
-                                <span id="pay-cprice" class="text-2xl font-black text-slate-800">৳০</span>
-                            </div>
-                        </div>
-                        <h3 class="text-lg font-bold mb-4 text-slate-800">পেমেন্ট একাউন্ট</h3>
-                        <div id="pm-list" class="space-y-3"></div>
-                    </div>
-                    <div class="md:w-7/12 p-8 md:p-10 bg-white">
-                        <h3 class="text-xl font-bold mb-1 text-slate-800">তথ্য প্রদান করুন</h3>
-                        <p class="text-sm text-slate-500 mb-6">পেমেন্ট সম্পন্ন করার পর নিচের ফর্মটি পূরণ করুন</p>
-                        <div class="space-y-4">
-                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">আপনার নাম</label><input id="pay-name" type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="সম্পূর্ণ নাম"></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">ইমেইল</label><input id="pay-email" type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="example@mail.com"></div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="block text-sm font-semibold text-slate-700 mb-1">সেন্ডার নাম্বার</label><input id="pay-sender" type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="017..."></div>
-                                <div><label class="block text-sm font-semibold text-slate-700 mb-1">Transaction ID</label><input id="pay-txid" type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition uppercase" placeholder="8N7A..."></div>
-                            </div>
-                            <div class="bg-red-50 p-3 rounded-lg flex gap-2 items-start"><i data-lucide="alert-circle" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i><p class="text-xs text-red-600 leading-relaxed">ভুল তথ্য দিলে অ্যাক্সেস বাতিল হতে পারে। কোর্সটি কপিরাইট প্রটেক্টেড।</p></div>
-                            <button onclick="submitOrder()" class="w-full gradient-bg text-white font-bold py-4 rounded-xl shadow-lg hover:opacity-90 transition flex justify-center items-center gap-2">
-                                অর্ডার কনফার্ম করুন <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  <section class="py-20 bg-slate-50">
+    <div class="container mx-auto px-6 max-w-5xl">
+      <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+        <div class="md:flex">
+          <div class="md:w-5/12 bg-slate-50 p-8 md:p-10 border-r border-slate-100">
+            <h3 class="text-xl font-bold mb-6 text-slate-800">অর্ডার সামারি</h3>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-8 shadow-sm">
+              <p class="text-xs text-slate-500 font-bold uppercase mb-1">কোর্স নাম</p>
+              <h4 id="pay-cname-el" class="font-bold text-lg text-indigo-700">—</h4>
+              <div class="my-3 border-t border-dashed border-slate-200"></div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-600 font-medium">মোট পেমেন্ট</span>
+                <span id="pay-cprice-el" class="text-2xl font-black text-slate-800">৳০</span>
+              </div>
             </div>
+            <h3 class="text-lg font-bold mb-4 text-slate-800">পেমেন্ট একাউন্ট</h3>
+            <div id="pm-list-el" class="space-y-3"></div>
+          </div>
+          <div class="md:w-7/12 p-8 md:p-10 bg-white">
+            <h3 class="text-xl font-bold mb-1 text-slate-800">তথ্য প্রদান করুন</h3>
+            <p class="text-sm text-slate-500 mb-6">পেমেন্ট সম্পন্ন করার পর নিচের ফর্মটি পূরণ করুন</p>
+            <div class="space-y-4">
+              <div><label class="block text-sm font-semibold text-slate-700 mb-1">আপনার নাম</label><input id="pay-name-el" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="সম্পূর্ণ নাম লিখুন"></div>
+              <div><label class="block text-sm font-semibold text-slate-700 mb-1">ইমেইল (লিংক যাবে)</label><input id="pay-email-el" type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="example@mail.com"></div>
+              <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-sm font-semibold text-slate-700 mb-1">সেন্ডার নাম্বার</label><input id="pay-sender-el" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="017..."></div>
+                <div><label class="block text-sm font-semibold text-slate-700 mb-1">Transaction ID</label><input id="pay-txid-el" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition uppercase" placeholder="8N7A..."></div>
+              </div>
+              <div class="bg-red-50 p-3 rounded-lg flex gap-2 items-start mt-2">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                <p class="text-xs text-red-600 leading-relaxed">ভুল তথ্য দিলে অ্যাক্সেস বাতিল হতে পারে। কোর্সটি কপিরাইট প্রটেক্টেড, শেয়ার করা সম্পূর্ণ নিষিদ্ধ।</p>
+              </div>
+              <button onclick="submitOrder()" class="w-full gradient-bg text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:opacity-90 transition mt-2 flex justify-center items-center gap-2">
+                অর্ডার কনফার্ম করুন <i data-lucide="arrow-right" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </div>
 
+<!-- ════ TOOLS ════ -->
 <div id="page-tools" class="page-content">
-    <section class="py-20">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-14 max-w-2xl mx-auto">
-                <span class="text-indigo-600 font-bold text-sm tracking-widest uppercase">ফ্রি রিসোর্স</span>
-                <h1 class="text-3xl md:text-4xl font-extrabold mt-2 mb-4 text-slate-900">প্রিমিয়াম টুলস কালেকশন</h1>
-            </div>
-            <div id="tools-filter" class="flex flex-wrap justify-center gap-3 mb-10"></div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="tools-grid">
-                <div class="col-span-3 text-center py-12 text-slate-400"><i data-lucide="loader" class="w-8 h-8 mx-auto mb-2 animate-spin opacity-40"></i><p>লোড হচ্ছে...</p></div>
-            </div>
+  <section class="py-20">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-indigo-600 font-bold text-sm tracking-widest uppercase">ফ্রি রিসোর্স</span>
+        <h1 class="text-3xl md:text-4xl font-extrabold mt-2 mb-4 text-slate-900">প্রিমিয়াম টুলস কালেকশন</h1>
+        <p class="text-slate-600">অনলাইন ইনকামে কাজে আসবে এমন সেরা টুলস ও রিসোর্স একসাথে।</p>
+      </div>
+      <div id="tools-filter-el" class="flex flex-wrap justify-center gap-3 mb-10"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="tools-grid-el">
+        <div class="col-span-3 text-center py-12 text-slate-400">
+          <div class="w-8 h-8 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </div>
 
+<!-- ════ UPDATES (Telegram style) ════ -->
 <div id="page-updates" class="page-content">
-    <section class="py-10 bg-slate-100 min-h-screen">
-        <div class="container mx-auto px-4">
-            <div class="tgwrap mb-5">
-                <div class="bg-white rounded-2xl shadow border border-gray-100 p-5 flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl font-black flex-shrink-0">M</div>
-                    <div class="flex-1">
-                        <h2 class="text-xl font-extrabold text-slate-900">MethodMaster আপডেট</h2>
-                        <p id="ch-desc-txt" class="text-slate-500 text-sm mt-0.5">নতুন মেথড ও টিপস পান সবার আগে।</p>
-                        <div class="flex flex-wrap items-center gap-3 mt-2">
-                            <span id="ch-members-txt" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">৫,০০০+ মেম্বার</span>
-                            <a id="ch-tglink" href="#" target="_blank" class="text-xs font-bold text-sky-600 flex items-center gap-1"><i data-lucide="send" class="w-3 h-3"></i> টেলিগ্রামে জয়েন</a>
-                        </div>
-                    </div>
-                </div>
+  <section class="py-10 bg-slate-100 min-h-screen">
+    <div class="container mx-auto px-4">
+      <div class="tgwrap mb-5">
+        <div class="bg-white rounded-2xl shadow border border-gray-100 p-5 flex items-center gap-4">
+          <div class="w-16 h-16 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl font-black flex-shrink-0">M</div>
+          <div class="flex-1">
+            <h2 class="text-xl font-extrabold text-slate-900">Voice Developer আপডেট</h2>
+            <p id="ch-desc-el" class="text-slate-500 text-sm mt-0.5">নতুন মেথড, টিপস ও এক্সক্লুসিভ আপডেট পান সবার আগে।</p>
+            <div class="flex flex-wrap items-center gap-3 mt-2">
+              <span id="ch-members-el" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">৫,০০০+ মেম্বার</span>
+              <a id="ch-tglink-el" href="#" target="_blank" class="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1">
+                <i data-lucide="send" class="w-3 h-3"></i> টেলিগ্রামে জয়েন করুন
+              </a>
             </div>
-            <div class="tgwrap" id="feed-container">
-                <div class="text-center py-16 text-slate-400" id="feed-empty">
-                    <i data-lucide="message-circle" class="w-14 h-14 mx-auto mb-3 opacity-25"></i>
-                    <p class="font-semibold text-lg">এখনো কোনো পোস্ট নেই</p>
-                </div>
-            </div>
+          </div>
         </div>
-    </section>
+      </div>
+      <div class="tgwrap" id="feed-container-el">
+        <div class="text-center py-16 text-slate-400" id="feed-empty-el">
+          <i data-lucide="message-circle" class="w-14 h-14 mx-auto mb-3 opacity-25"></i>
+          <p class="font-semibold text-lg">এখনো কোনো পোস্ট নেই</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
+<!-- ════ CONDITIONS ════ -->
 <div id="page-conditions" class="page-content">
-    <section class="py-20 container mx-auto px-6">
-        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="bg-slate-900 px-8 py-8 text-white text-center"><h1 class="text-3xl font-bold">শর্তাবলী ও নীতিমালা</h1></div>
-            <div id="conditions-content" class="p-8 md:p-12 space-y-8">
-                <div class="text-center py-8 text-slate-400"><i data-lucide="loader" class="w-6 h-6 mx-auto animate-spin opacity-40"></i></div>
-            </div>
-        </div>
-    </section>
+  <section class="py-20 container mx-auto px-6">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <div class="bg-slate-900 px-8 py-8 text-white text-center">
+        <h1 class="text-3xl font-bold">শর্তাবলী ও নীতিমালা</h1>
+        <p class="opacity-70 mt-2">আমাদের সার্ভিস ব্যবহারের নিয়মাবলী</p>
+      </div>
+      <div id="conditions-content-el" class="p-8 md:p-12 space-y-8">
+        <div class="text-center py-8 text-slate-400"><div class="w-6 h-6 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto"></div></div>
+      </div>
+    </div>
+  </section>
 </div>
 
+<!-- ════ CONTACT ════ -->
 <div id="page-contact" class="page-content">
-    <section class="py-20 container mx-auto px-6 max-w-2xl">
-        <div class="text-center mb-12"><h1 class="text-3xl font-bold text-slate-900">যোগাযোগ করুন</h1></div>
-        <div id="contact-content" class="space-y-4"></div>
-    </section>
+  <section class="py-20 container mx-auto px-6 max-w-4xl">
+    <div class="text-center mb-12">
+      <h1 class="text-3xl font-bold text-slate-900">যোগাযোগ করুন</h1>
+      <p class="text-slate-500 mt-2">যেকোনো প্রয়োজনে আমাদের সাথে কথা বলুন</p>
+    </div>
+    <div id="contact-content-el" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  </section>
 </div>
 
 </main>
 
+<!-- FOOTER -->
 <footer class="bg-slate-900 text-slate-400 py-12 mt-auto">
-    <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 border-b border-slate-800 pb-8">
-            <div>
-                <div class="flex items-center gap-2 text-2xl font-bold text-white mb-3"><i data-lucide="zap" class="w-6 h-6 text-indigo-500"></i> <span id="footer-name">MethodMaster</span></div>
-                <p id="footer-tagline" class="text-sm opacity-70">আপনার ডিজিটাল স্কিল শেখার বিশ্বস্ত সঙ্গী।</p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-4">লিংকস</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-white transition nav-link" data-page="home">হোম</a></li>
-                    <li><a href="#" class="hover:text-white transition nav-link" data-page="courses">কোর্সসমূহ</a></li>
-                    <li><a href="#" class="hover:text-white transition nav-link" data-page="tools">টুলস</a></li>
-                    <li><a href="#" class="hover:text-white transition nav-link" data-page="updates">আপডেট</a></li>
-                    <li><a href="#" class="hover:text-white transition nav-link" data-page="conditions">শর্তাবলী</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-4">সোশ্যাল</h4>
-                <div id="footer-social" class="flex space-x-4"></div>
-            </div>
+  <div class="container mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 border-b border-slate-800 pb-8">
+      <div>
+        <div class="flex items-center gap-2 text-2xl font-bold text-white mb-3">
+          <i data-lucide="zap" class="w-6 h-6 text-indigo-500"></i>
+          <span id="footer-name-el">Voice Developer</span>
         </div>
-        <div id="footer-copy" class="text-center text-xs opacity-50">© ২০২৫ MethodMaster. সর্বস্বত্ব সংরক্ষিত।</div>
+        <p id="footer-tagline-el" class="text-sm opacity-70">আপনার ডিজিটাল স্কিল শেখার বিশ্বস্ত সঙ্গী।</p>
+      </div>
+      <div>
+        <h4 class="text-white font-bold mb-4">লিংকস</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition nav-link" data-page="home">হোম</a></li>
+          <li><a href="#" class="hover:text-white transition nav-link" data-page="courses">কোর্সসমূহ</a></li>
+          <li><a href="#" class="hover:text-white transition nav-link" data-page="tools">টুলস</a></li>
+          <li><a href="#" class="hover:text-white transition nav-link" data-page="updates">আপডেট</a></li>
+          <li><a href="#" class="hover:text-white transition nav-link" data-page="conditions">শর্তাবলী</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-bold mb-4">সোশ্যাল</h4>
+        <div id="footer-social-el" class="flex space-x-4"></div>
+      </div>
     </div>
+    <div id="footer-copy-el" class="text-center text-xs opacity-50">© ২০২৫ VoiceDeveloper. সর্বস্বত্ব সংরক্ষিত।</div>
+  </div>
 </footer>
 
+<!-- SUCCESS MODAL -->
 <div id="success-modal" class="moverlay">
-    <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
-        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="check" class="w-10 h-10"></i></div>
-        <h2 class="text-2xl font-bold mb-3 text-slate-900">অর্ডার সফল!</h2>
-        <p class="text-slate-600 mb-8 leading-relaxed">পেমেন্ট ভেরিফাই হলে ইমেইলে এক্সেস পাঠানো হবে।</p>
-        <button onclick="document.getElementById('success-modal').classList.remove('open');showPage('home')" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold w-full">ঠিক আছে</button>
+  <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl">
+    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+      <i data-lucide="check" class="w-10 h-10"></i>
     </div>
+    <h2 class="text-2xl font-bold mb-3 text-slate-900">অর্ডার সফল হয়েছে!</h2>
+    <p class="text-slate-600 mb-8 leading-relaxed">আপনার পেমেন্ট ভেরিফাই করা হচ্ছে। ১০-১৫ মিনিটের মধ্যে আপনার ইমেইলে অ্যাক্সেস পাঠিয়ে দেওয়া হবে।</p>
+    <button onclick="closeSuccessModal()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-slate-800 transition w-full">ঠিক আছে</button>
+  </div>
 </div>
 
-<div id="admin-login" class="moverlay">
-    <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl border border-indigo-100">
-        <div class="text-center mb-6">
-            <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4"><i data-lucide="shield" class="w-7 h-7 text-white"></i></div>
-            <h2 class="text-xl font-bold text-slate-900">অ্যাডমিন লগইন</h2>
-        </div>
-        <input type="email" id="login-email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-3" placeholder="ইমেইল">
-        <input type="password" id="login-pw" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-4" placeholder="পাসওয়ার্ড">
-        <button onclick="doLogin()" class="w-full gradient-bg text-white py-3 rounded-xl font-bold hover:opacity-90 transition text-sm">প্রবেশ করুন</button>
-        <button onclick="document.getElementById('admin-login').classList.remove('open')" class="w-full mt-3 text-slate-400 text-sm">বাতিল</button>
-        <div id="login-err" class="mt-2 text-xs text-red-500 text-center"></div>
+<!-- ADMIN LOGIN (hidden modal) -->
+<div id="admin-login-modal" class="moverlay">
+  <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl border border-indigo-100">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="shield" class="w-7 h-7 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold text-slate-900">অ্যাডমিন লগইন</h2>
     </div>
+    <input type="email" id="admin-email-in" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-3" placeholder="ইমেইল">
+    <input type="password" id="admin-pw-in" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-4" placeholder="পাসওয়ার্ড">
+    <button onclick="doLogin()" class="w-full gradient-bg text-white py-3 rounded-xl font-bold hover:opacity-90 transition text-sm">প্রবেশ করুন</button>
+    <button onclick="$('admin-login-modal').classList.remove('open')" class="w-full mt-3 text-slate-400 text-sm hover:text-slate-600">বাতিল</button>
+    <p id="login-err-el" class="mt-2 text-xs text-red-500 text-center"></p>
+  </div>
 </div>
 
+<!-- ════ ADMIN PANEL ════ -->
 <div id="admin-overlay">
-    <div class="admin-sidebar">
-        <div class="px-5 py-5 border-b border-indigo-900/50">
-            <div class="flex items-center gap-2 mb-1"><i data-lucide="zap" class="w-5 h-5 text-indigo-400"></i><span class="font-bold text-white text-lg">MethodMaster</span></div>
-            <span class="text-[10px] bg-indigo-800 text-indigo-300 px-2 py-0.5 rounded font-bold">ADMIN PANEL</span>
-        </div>
-        <div class="py-2 flex-1 overflow-y-auto">
-            <p class="px-5 py-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">ড্যাশবোর্ড</p>
-            <div class="anav active" onclick="sw('dash')"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> ড্যাশবোর্ড</div>
-            <p class="px-5 py-2 mt-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">কনটেন্ট</p>
-            <div class="anav" onclick="sw('hero')"><i data-lucide="home" class="w-4 h-4"></i> হোম পেজ</div>
-            <div class="anav" onclick="sw('courses')"><i data-lucide="book-open" class="w-4 h-4"></i> কোর্সসমূহ</div>
-            <div class="anav" onclick="sw('add-course')"><i data-lucide="plus-circle" class="w-4 h-4"></i> নতুন কোর্স</div>
-            <div class="anav" onclick="sw('tools')"><i data-lucide="wrench" class="w-4 h-4"></i> টুলস</div>
-            <div class="anav" onclick="sw('add-tool')"><i data-lucide="plus-square" class="w-4 h-4"></i> নতুন টুল</div>
-            <div class="anav" onclick="sw('posts')"><i data-lucide="send" class="w-4 h-4"></i> আপডেট পোস্ট</div>
-            <div class="anav" onclick="sw('reviews')"><i data-lucide="message-square" class="w-4 h-4"></i> রিভিউ</div>
-            <div class="anav" onclick="sw('orders')"><i data-lucide="shopping-bag" class="w-4 h-4"></i> অর্ডারসমূহ</div>
-            <p class="px-5 py-2 mt-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">সেটিংস</p>
-            <div class="anav" onclick="sw('pm-settings')"><i data-lucide="credit-card" class="w-4 h-4"></i> পেমেন্ট মেথড</div>
-            <div class="anav" onclick="sw('site-settings')"><i data-lucide="settings" class="w-4 h-4"></i> সাইট সেটিংস</div>
-            <div class="anav" onclick="sw('cond-mgr')"><i data-lucide="file-text" class="w-4 h-4"></i> শর্তাবলী</div>
-            <div class="anav" onclick="sw('contact-mgr')"><i data-lucide="phone" class="w-4 h-4"></i> যোগাযোগ</div>
-        </div>
-        <div class="px-5 py-4 border-t border-indigo-900/50">
-            <button onclick="doLogout()" class="flex items-center gap-2 text-indigo-400 hover:text-red-400 text-sm font-semibold transition w-full"><i data-lucide="log-out" class="w-4 h-4"></i> লগআউট</button>
-        </div>
+  <div class="asidebar">
+    <div class="px-5 py-5 border-b border-indigo-900/50">
+      <div class="flex items-center gap-2 mb-1"><i data-lucide="zap" class="w-5 h-5 text-indigo-400"></i><span class="font-bold text-white text-lg">Voice Developer</span></div>
+      <span class="text-[10px] bg-indigo-800 text-indigo-300 px-2 py-0.5 rounded font-bold">ADMIN PANEL</span>
+    </div>
+    <div class="py-2 flex-1 overflow-y-auto">
+      <p class="px-5 py-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">ড্যাশবোর্ড</p>
+      <div class="anav active" onclick="sw('dash')"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> ড্যাশবোর্ড</div>
+      <p class="px-5 py-2 mt-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">কনটেন্ট</p>
+      <div class="anav" onclick="sw('hero')"><i data-lucide="home" class="w-4 h-4"></i> হোম পেজ</div>
+      <div class="anav" onclick="sw('courses')"><i data-lucide="book-open" class="w-4 h-4"></i> কোর্সসমূহ</div>
+      <div class="anav" onclick="sw('add-course')"><i data-lucide="plus-circle" class="w-4 h-4"></i> নতুন কোর্স</div>
+      <div class="anav" onclick="sw('tools')"><i data-lucide="wrench" class="w-4 h-4"></i> টুলস</div>
+      <div class="anav" onclick="sw('add-tool')"><i data-lucide="plus-square" class="w-4 h-4"></i> নতুন টুল</div>
+      <div class="anav" onclick="sw('posts')"><i data-lucide="send" class="w-4 h-4"></i> আপডেট পোস্ট</div>
+      <div class="anav" onclick="sw('reviews')"><i data-lucide="message-square" class="w-4 h-4"></i> রিভিউ</div>
+      <div class="anav" onclick="sw('orders')"><i data-lucide="shopping-bag" class="w-4 h-4"></i> অর্ডারসমূহ</div>
+      <p class="px-5 py-2 mt-2 text-[10px] uppercase tracking-widest text-indigo-500 font-bold">সেটিংস</p>
+      <div class="anav" onclick="sw('pm-settings')"><i data-lucide="credit-card" class="w-4 h-4"></i> পেমেন্ট মেথড</div>
+      <div class="anav" onclick="sw('site-settings')"><i data-lucide="settings" class="w-4 h-4"></i> সাইট সেটিংস</div>
+      <div class="anav" onclick="sw('cond-mgr')"><i data-lucide="file-text" class="w-4 h-4"></i> শর্তাবলী</div>
+      <div class="anav" onclick="sw('contact-mgr')"><i data-lucide="phone" class="w-4 h-4"></i> যোগাযোগ</div>
+      <div class="anav" onclick="sw('channel-settings')"><i data-lucide="radio" class="w-4 h-4"></i> চ্যানেল সেটিংস</div>
+    </div>
+    <div class="px-5 py-4 border-t border-indigo-900/50">
+      <button onclick="doLogout()" class="flex items-center gap-2 text-indigo-400 hover:text-red-400 text-sm font-semibold transition w-full">
+        <i data-lucide="log-out" class="w-4 h-4"></i> লগআউট
+      </button>
+    </div>
+  </div>
+
+  <div class="amain">
+    <!-- DASHBOARD -->
+    <div id="as-dash" class="asec active">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">ড্যাশবোর্ড</h2><p class="text-indigo-400 text-sm mt-1">সাইটের সামগ্রিক তথ্য</p></div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5" id="dash-stats-el"></div>
+      <div class="acard"><p class="text-indigo-300 text-sm font-bold mb-3">সাম্প্রতিক অর্ডার</p><div id="dash-orders-el"></div></div>
     </div>
 
-    <div class="admin-main">
-        <div id="as-dash" class="asec active">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">ড্যাশবোর্ড</h2></div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5" id="dash-stats"></div>
-            <div class="acard"><p class="text-indigo-300 text-sm font-bold mb-3">সাম্প্রতিক অর্ডার</p><div id="dash-orders"></div></div>
+    <!-- HERO SETTINGS -->
+    <div id="as-hero" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">হোম পেজ সম্পাদনা</h2></div>
+      <div class="space-y-3 max-w-2xl">
+        <div><label class="al">ব্যাজ টেক্সট</label><input id="h-badge-in" class="ai" placeholder="লাইভ মেথড আপডেট ২০২৫"></div>
+        <div><label class="al">শিরোনাম লাইন ১</label><input id="h-t1-in" class="ai" placeholder="দক্ষতা বাড়ান,"></div>
+        <div><label class="al">শিরোনাম লাইন ২ (গ্রেডিয়েন্ট)</label><input id="h-t2-in" class="ai" placeholder="আয় করুন স্মার্টলি"></div>
+        <div><label class="al">বিবরণ</label><textarea id="h-desc-in" class="ai h-20 resize-none"></textarea></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">চার্ট হেডার</label><input id="h-cl-in" class="ai"></div>
+          <div><label class="al">মোট আয়</label><input id="h-ca-in" class="ai"></div>
         </div>
-
-        <div id="as-hero" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">হোম পেজ সম্পাদনা</h2></div>
-            <div class="space-y-3 max-w-2xl">
-                <div><label class="al">ব্যাজ টেক্সট</label><input id="h-badge" class="ai"></div>
-                <div><label class="al">শিরোনাম লাইন ১</label><input id="h-t1" class="ai"></div>
-                <div><label class="al">শিরোনাম লাইন ২ (গ্রেডিয়েন্ট)</label><input id="h-t2" class="ai"></div>
-                <div><label class="al">বিবরণ</label><textarea id="h-desc" class="ai h-20 resize-none"></textarea></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">চার্ট হেডার</label><input id="h-cl" class="ai"></div><div><label class="al">মোট আয়</label><input id="h-ca" class="ai"></div></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">গ্রোথ %</label><input id="h-cg" class="ai"></div><div><label class="al">রেটিং ব্যাজ</label><input id="h-rt" class="ai"></div></div>
-                <button onclick="saveHero()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ করুন</button>
-            </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">গ্রোথ % ব্যাজ</label><input id="h-cg-in" class="ai"></div>
+          <div><label class="al">রেটিং ব্যাজ</label><input id="h-rt-in" class="ai"></div>
         </div>
-
-        <div id="as-courses" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">কোর্স ম্যানেজমেন্ট</h2>
-                <button onclick="sw('add-course')" class="ab abp text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> নতুন</button>
-            </div>
-            <div id="admin-course-list" class="space-y-2"></div>
-        </div>
-
-        <div id="as-add-course" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="course-form-h">নতুন কোর্স যোগ করুন</h2></div>
-            <div class="space-y-3 max-w-2xl">
-                <input type="hidden" id="c-eid">
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">কোর্স নাম</label><input id="c-title" class="ai"></div><div><label class="al">ক্যাটাগরি</label><input id="c-cat" class="ai" placeholder="মার্কেটিং"></div></div>
-                <div><label class="al">বিবরণ</label><textarea id="c-desc" class="ai h-16 resize-none"></textarea></div>
-                <div class="grid grid-cols-3 gap-3"><div><label class="al">মূল্য (৳)</label><input id="c-price" class="ai" placeholder="২,৫০০"></div><div><label class="al">আগের মূল্য</label><input id="c-oprice" class="ai" placeholder="৫,০০০"></div><div><label class="al">ছাত্র সংখ্যা</label><input id="c-students" class="ai" placeholder="৫২০+"></div></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">রেটিং</label><input id="c-rating" class="ai" placeholder="৪.৯"></div><div><label class="al">ইমেজ URL</label><input id="c-img" class="ai" placeholder="https://..."></div></div>
-                <div><label class="al">ফিচার (প্রতিটি নতুন লাইনে)</label><textarea id="c-features" class="ai h-20 resize-none"></textarea></div>
-                <div><label class="al">কারিকুলাম (প্রতিটি নতুন লাইনে)</label><textarea id="c-topics" class="ai h-24 resize-none"></textarea></div>
-                <div class="flex gap-3"><button onclick="saveCourse()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ</button><button onclick="clearCourseForm()" class="ab abg">ক্লিয়ার</button></div>
-            </div>
-        </div>
-
-        <div id="as-tools" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">টুলস ম্যানেজমেন্ট</h2>
-                <button onclick="sw('add-tool')" class="ab abp text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> নতুন</button>
-            </div>
-            <div id="admin-tool-list" class="space-y-2"></div>
-        </div>
-
-        <div id="as-add-tool" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="tool-form-h">নতুন টুল যোগ করুন</h2></div>
-            <div class="space-y-3 max-w-2xl">
-                <input type="hidden" id="t-eid">
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">টুলের নাম</label><input id="t-name" class="ai" placeholder="Canva Pro"></div><div><label class="al">ক্যাটাগরি</label><input id="t-cat" class="ai" placeholder="ডিজাইন"></div></div>
-                <div><label class="al">বিবরণ</label><textarea id="t-desc" class="ai h-16 resize-none"></textarea></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">লিংক</label><input id="t-link" class="ai" placeholder="https://..."></div><div><label class="al">আইকন (lucide)</label><input id="t-icon" class="ai" placeholder="image"></div></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="al">ব্যাজ</label>
-                    <select id="t-badge" class="ai"><option>ফ্রি</option><option>প্রিমিয়াম</option><option>ক্রেক</option></select></div>
-                    <div><label class="al">কালার</label>
-                    <select id="t-color" class="ai"><option value="indigo">Indigo</option><option value="green">Green</option><option value="pink">Pink</option><option value="purple">Purple</option><option value="amber">Amber</option><option value="orange">Orange</option></select></div>
-                </div>
-                <div class="flex gap-3"><button onclick="saveTool()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ</button><button onclick="clearToolForm()" class="ab abg">ক্লিয়ার</button></div>
-            </div>
-        </div>
-
-        <div id="as-posts" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">আপডেট পোস্ট</h2></div>
-            <div class="max-w-2xl space-y-3 mb-5">
-                <div><label class="al">পোস্টের ধরন</label>
-                    <select id="post-type" class="ai" onchange="togglePF()">
-                        <option value="text">শুধু টেক্সট</option>
-                        <option value="link">টেক্সট + লিংক</option>
-                        <option value="image">টেক্সট + ইমেজ</option>
-                    </select>
-                </div>
-                <div><label class="al">পোস্টের বিষয়বস্তু</label><textarea id="post-body" class="ai h-28 resize-none" placeholder="মেথড, টিপস বা যেকোনো আপডেট লিখুন... 🔥"></textarea></div>
-                <div id="pf-link" class="hidden space-y-2">
-                    <div><label class="al">লিংক টাইটেল</label><input id="post-ltitle" class="ai"></div>
-                    <div><label class="al">URL</label><input id="post-lurl" class="ai" placeholder="https://..."></div>
-                </div>
-                <div id="pf-img" class="hidden"><label class="al">ইমেজ URL</label><input id="post-iurl" class="ai" placeholder="https://..."></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">ট্যাগস (কমা দিয়ে)</label><input id="post-tags" class="ai" placeholder="#মেথড, #টিপস"></div><div><label class="al">ভিউ কাউন্ট</label><input id="post-views" class="ai" placeholder="১.২ হাজার"></div></div>
-                <div class="flex items-center gap-2"><input type="checkbox" id="post-pin" class="w-4 h-4 accent-indigo-600"><label for="post-pin" class="text-indigo-300 text-sm font-semibold">পিন পোস্ট</label></div>
-                <button onclick="publishPost()" class="ab abp flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> পাবলিশ করুন</button>
-            </div>
-            <div class="acard max-w-2xl mb-4">
-                <p class="text-indigo-300 text-sm font-bold mb-3">চ্যানেল সেটিংস</p>
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <div><label class="al">চ্যানেল বিবরণ</label><input id="ch-desc-in" class="ai"></div>
-                    <div><label class="al">মেম্বার কাউন্ট</label><input id="ch-mem-in" class="ai"></div>
-                </div>
-                <button onclick="saveChannel()" class="ab abg text-xs">সেভ</button>
-            </div>
-            <div class="border-t border-indigo-900/50 pt-4 max-w-2xl">
-                <p class="text-indigo-300 text-sm font-bold mb-3">প্রকাশিত পোস্টসমূহ</p>
-                <div id="posts-admin-list" class="space-y-2"></div>
-            </div>
-        </div>
-
-        <div id="as-reviews" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">রিভিউ</h2></div>
-            <div class="space-y-3 max-w-2xl mb-5">
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">নাম</label><input id="rv-name" class="ai"></div><div><label class="al">পেশা / শহর</label><input id="rv-role" class="ai"></div></div>
-                <div><label class="al">রিভিউ</label><textarea id="rv-text" class="ai h-16 resize-none"></textarea></div>
-                <div><label class="al">রেটিং (১-৫)</label><input type="number" id="rv-rating" class="ai" placeholder="5" min="1" max="5"></div>
-                <button onclick="addReview()" class="ab abp flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> যোগ করুন</button>
-            </div>
-            <div id="rv-admin-list" class="space-y-2 max-w-2xl"></div>
-        </div>
-
-        <div id="as-orders" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">অর্ডারসমূহ</h2></div>
-            <div class="flex gap-3 mb-4">
-                <button onclick="loadOrders('all')" class="ab abg text-xs order-filter-btn active-filter">সব</button>
-                <button onclick="loadOrders('pending')" class="ab abg text-xs order-filter-btn">পেন্ডিং</button>
-                <button onclick="loadOrders('verified')" class="ab abg text-xs order-filter-btn">ভেরিফাইড</button>
-            </div>
-            <div id="orders-list" class="space-y-2 max-w-2xl"></div>
-        </div>
-
-        <div id="as-pm-settings" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">পেমেন্ট মেথড</h2></div>
-            <div id="pm-admin-list" class="space-y-2 max-w-2xl mb-5"></div>
-            <div class="acard max-w-2xl mb-4">
-                <p class="text-indigo-300 text-sm font-bold mb-3">নতুন পেমেন্ট মেথড</p>
-                <div class="grid grid-cols-2 gap-3 mb-2"><div><label class="al">নাম</label><input id="pm-name" class="ai" placeholder="Bkash"></div><div><label class="al">নাম্বার</label><input id="pm-number" class="ai" placeholder="01700-000000"></div></div>
-                <div class="grid grid-cols-2 gap-3 mb-3"><div><label class="al">টাইপ</label><input id="pm-type" class="ai" placeholder="Send Money"></div><div><label class="al">কালার (pink/orange/yellow)</label><input id="pm-color" class="ai" placeholder="pink"></div></div>
-                <button onclick="addPM()" class="ab abp text-xs">যোগ করুন</button>
-            </div>
-        </div>
-
-        <div id="as-site-settings" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">সাইট সেটিংস</h2></div>
-            <div class="space-y-3 max-w-2xl">
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">সাইট নাম</label><input id="ss-name" class="ai"></div><div><label class="al">টেলিগ্রাম URL</label><input id="ss-tg" class="ai"></div></div>
-                <div class="grid grid-cols-2 gap-3"><div><label class="al">ফেসবুক URL</label><input id="ss-fb" class="ai"></div><div><label class="al">ইউটিউব URL</label><input id="ss-yt" class="ai"></div></div>
-                <div><label class="al">ফুটার ট্যাগলাইন</label><input id="ss-tagline" class="ai"></div>
-                <div><label class="al">কপিরাইট টেক্সট</label><input id="ss-copy" class="ai"></div>
-                <div><label class="al">পেজ টাইটেল</label><input id="ss-ptitle" class="ai"></div>
-                <p class="text-indigo-400 text-xs font-bold pt-2 border-t border-indigo-900/40 mt-2">স্ট্যাটস বার</p>
-                <div id="stats-editor" class="space-y-2"></div>
-                <button onclick="addStatRow()" class="ab abg text-xs">+ স্ট্যাট যোগ</button>
-                <div class="pt-2"><button onclick="saveSiteSettings()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সব সেভ</button></div>
-            </div>
-        </div>
-
-        <div id="as-cond-mgr" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">শর্তাবলী সম্পাদনা</h2></div>
-            <div id="cond-admin-list" class="space-y-2 max-w-2xl mb-4"></div>
-            <div class="acard max-w-2xl">
-                <p class="text-indigo-300 text-sm font-bold mb-3">নতুন সেকশন</p>
-                <div class="grid grid-cols-2 gap-3 mb-2"><div><label class="al">শিরোনাম</label><input id="cnd-title" class="ai"></div><div><label class="al">আইকন</label><input id="cnd-icon" class="ai" placeholder="shield-alert"></div></div>
-                <div class="mb-2"><label class="al">বিষয়বস্তু</label><textarea id="cnd-text" class="ai h-16 resize-none"></textarea></div>
-                <div class="mb-3"><label class="al">আইকন কালার (text-red-500...)</label><input id="cnd-color" class="ai" placeholder="text-red-500"></div>
-                <button onclick="addCond()" class="ab abp text-xs">যোগ করুন</button>
-            </div>
-        </div>
-
-        <div id="as-contact-mgr" class="asec">
-            <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">যোগাযোগ তথ্য</h2></div>
-            <div id="contact-admin-list" class="space-y-2 max-w-2xl mb-4"></div>
-            <div class="acard max-w-2xl">
-                <p class="text-indigo-300 text-sm font-bold mb-3">নতুন যোগাযোগ</p>
-                <div class="grid grid-cols-2 gap-3 mb-2"><div><label class="al">লেবেল</label><input id="ct-label" class="ai"></div><div><label class="al">ভ্যালু</label><input id="ct-value" class="ai"></div></div>
-                <div class="grid grid-cols-2 gap-3 mb-3"><div><label class="al">টাইপ (email/telegram)</label><input id="ct-type" class="ai" placeholder="email"></div><div><label class="al">আইকন</label><input id="ct-icon" class="ai" placeholder="mail"></div></div>
-                <button onclick="addContact()" class="ab abp text-xs">যোগ করুন</button>
-            </div>
-        </div>
-
+        <button onclick="saveHero()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ করুন</button>
+      </div>
     </div>
+
+    <!-- COURSES LIST -->
+    <div id="as-courses" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-white">কোর্স ম্যানেজমেন্ট</h2>
+        <button onclick="sw('add-course')" class="ab abp text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> নতুন</button>
+      </div>
+      <div id="admin-courses-list-el" class="space-y-2"></div>
+    </div>
+
+    <!-- ADD/EDIT COURSE -->
+    <div id="as-add-course" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="course-form-title">নতুন কোর্স যোগ করুন</h2></div>
+      <div class="space-y-3 max-w-2xl">
+        <input type="hidden" id="c-edit-id">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">কোর্স নাম</label><input id="c-title-in" class="ai"></div>
+          <div><label class="al">ক্যাটাগরি</label><input id="c-cat-in" class="ai" placeholder="মার্কেটিং"></div>
+        </div>
+        <div><label class="al">বিবরণ</label><textarea id="c-desc-in" class="ai h-16 resize-none"></textarea></div>
+        <div class="grid grid-cols-3 gap-3">
+          <div><label class="al">মূল্য (৳)</label><input id="c-price-in" class="ai" placeholder="২,৫০০"></div>
+          <div><label class="al">আগের মূল্য</label><input id="c-oprice-in" class="ai" placeholder="৫,০০০"></div>
+          <div><label class="al">ছাত্র সংখ্যা</label><input id="c-students-in" class="ai" placeholder="৫২০+"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">রেটিং</label><input id="c-rating-in" class="ai" placeholder="৪.৯"></div>
+          <div><label class="al">ইমেজ URL</label><input id="c-img-in" class="ai" placeholder="https://..."></div>
+        </div>
+        <div><label class="al">ফিচার (প্রতিটি নতুন লাইনে)</label><textarea id="c-features-in" class="ai h-20 resize-none" placeholder="১০ ঘণ্টা ভিডিও&#10;লাইফটাইম আপডেট"></textarea></div>
+        <div><label class="al">কারিকুলাম / টপিক (প্রতিটি নতুন লাইনে)</label><textarea id="c-topics-in" class="ai h-24 resize-none" placeholder="CPA বেসিক&#10;অফার সিলেকশন"></textarea></div>
+        <div class="flex gap-3">
+          <button onclick="saveCourse()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ করুন</button>
+          <button onclick="clearCF()" class="ab abg">ক্লিয়ার</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS LIST -->
+    <div id="as-tools" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-white">টুলস ম্যানেজমেন্ট</h2>
+        <button onclick="sw('add-tool')" class="ab abp text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> নতুন</button>
+      </div>
+      <div id="admin-tools-list-el" class="space-y-2"></div>
+    </div>
+
+    <!-- ADD/EDIT TOOL -->
+    <div id="as-add-tool" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white" id="tool-form-title">নতুন টুল যোগ করুন</h2></div>
+      <div class="space-y-3 max-w-2xl">
+        <input type="hidden" id="t-edit-id">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">টুলের নাম</label><input id="t-name-in" class="ai" placeholder="Canva Pro"></div>
+          <div><label class="al">ক্যাটাগরি</label><input id="t-cat-in" class="ai" placeholder="ডিজাইন"></div>
+        </div>
+        <div><label class="al">বিবরণ</label><textarea id="t-desc-in" class="ai h-16 resize-none"></textarea></div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">লিংক (URL)</label><input id="t-link-in" class="ai" placeholder="https://..."></div>
+          <div><label class="al">আইকন (lucide নাম)</label><input id="t-icon-in" class="ai" placeholder="image"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">ব্যাজ</label>
+            <select id="t-badge-in" class="ai"><option>ফ্রি</option><option>প্রিমিয়াম</option><option>ক্রেক</option></select>
+          </div>
+          <div><label class="al">কালার</label>
+            <select id="t-color-in" class="ai"><option value="indigo">Indigo</option><option value="green">Green</option><option value="pink">Pink</option><option value="purple">Purple</option><option value="amber">Amber</option><option value="orange">Orange</option></select>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="saveTool()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ করুন</button>
+          <button onclick="clearTF()" class="ab abg">ক্লিয়ার</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTS (Updates) -->
+    <div id="as-posts" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">আপডেট পোস্ট করুন</h2></div>
+      <div class="max-w-2xl space-y-3 mb-6">
+        <div><label class="al">পোস্টের ধরন</label>
+          <select id="post-type-in" class="ai" onchange="togglePF()">
+            <option value="text">শুধু টেক্সট</option>
+            <option value="link">টেক্সট + লিংক</option>
+            <option value="image">টেক্সট + ইমেজ</option>
+          </select>
+        </div>
+        <div><label class="al">পোস্টের বিষয়বস্তু</label>
+          <textarea id="post-body-in" class="ai h-28 resize-none" placeholder="মেথড, টিপস বা যেকোনো আপডেট লিখুন...&#10;&#10;🔥 ইমোজি ব্যবহার করতে পারেন"></textarea>
+        </div>
+        <div id="pf-link-wrap" class="hidden space-y-2">
+          <div><label class="al">লিংক টাইটেল</label><input id="post-ltitle-in" class="ai" placeholder="এখানে ক্লিক করুন"></div>
+          <div><label class="al">URL</label><input id="post-lurl-in" class="ai" placeholder="https://..."></div>
+        </div>
+        <div id="pf-img-wrap" class="hidden">
+          <label class="al">ইমেজ URL</label><input id="post-iurl-in" class="ai" placeholder="https://...">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">ট্যাগস (কমা দিয়ে)</label><input id="post-tags-in" class="ai" placeholder="#মেথড, #টিপস"></div>
+          <div><label class="al">ভিউ কাউন্ট (প্রদর্শন)</label><input id="post-views-in" class="ai" placeholder="১.২ হাজার"></div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="post-pin-in" class="w-4 h-4 accent-indigo-600">
+          <label for="post-pin-in" class="text-indigo-300 text-sm font-semibold">পিন পোস্ট হিসেবে চিহ্নিত করুন</label>
+        </div>
+        <button onclick="publishPost()" class="ab abp flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i> পাবলিশ করুন</button>
+      </div>
+      <div class="border-t border-indigo-900/50 pt-4 max-w-2xl">
+        <p class="text-indigo-300 text-sm font-bold mb-3">প্রকাশিত পোস্টসমূহ</p>
+        <div id="admin-posts-list-el" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div id="as-reviews" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">রিভিউ ম্যানেজমেন্ট</h2></div>
+      <div class="space-y-3 max-w-2xl mb-5">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">নাম</label><input id="rv-name-in" class="ai"></div>
+          <div><label class="al">পেশা / শহর</label><input id="rv-role-in" class="ai" placeholder="ফ্রিল্যান্সার, ঢাকা"></div>
+        </div>
+        <div><label class="al">রিভিউ টেক্সট</label><textarea id="rv-text-in" class="ai h-16 resize-none"></textarea></div>
+        <div><label class="al">রেটিং (১-৫)</label><input type="number" id="rv-rating-in" class="ai" placeholder="5" min="1" max="5"></div>
+        <button onclick="addReview()" class="ab abp flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> যোগ করুন</button>
+      </div>
+      <div id="admin-reviews-list-el" class="space-y-2 max-w-2xl"></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="as-orders" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">অর্ডারসমূহ</h2></div>
+      <div class="flex gap-2 mb-4 flex-wrap">
+        <button onclick="loadOrders('all')" class="ab abg text-xs">সব</button>
+        <button onclick="loadOrders('pending')" class="ab abg text-xs">পেন্ডিং</button>
+        <button onclick="loadOrders('verified')" class="ab abg text-xs">ভেরিফাইড</button>
+        <button onclick="loadOrders('rejected')" class="ab abg text-xs">রিজেক্টেড</button>
+      </div>
+      <div id="orders-list-el" class="space-y-2 max-w-2xl"></div>
+    </div>
+
+    <!-- PAYMENT METHODS -->
+    <div id="as-pm-settings" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">পেমেন্ট মেথড</h2></div>
+      <div id="pm-admin-list-el" class="space-y-2 max-w-2xl mb-5"></div>
+      <div class="acard max-w-2xl mb-4">
+        <p class="text-indigo-300 text-sm font-bold mb-3">নতুন পেমেন্ট মেথড যোগ করুন</p>
+        <div class="grid grid-cols-2 gap-3 mb-2">
+          <div><label class="al">নাম</label><input id="pm-name-in" class="ai" placeholder="Bkash"></div>
+          <div><label class="al">নাম্বার / আইডি</label><input id="pm-number-in" class="ai" placeholder="01700-000000"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div><label class="al">টাইপ লেবেল</label><input id="pm-type-in" class="ai" placeholder="Send Money"></div>
+          <div><label class="al">কালার (pink/orange/yellow)</label><input id="pm-color-in" class="ai" placeholder="pink"></div>
+        </div>
+        <button onclick="addPM()" class="ab abp text-xs">যোগ করুন</button>
+      </div>
+    </div>
+
+    <!-- SITE SETTINGS -->
+    <div id="as-site-settings" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">সাইট সেটিংস</h2></div>
+      <div class="space-y-3 max-w-2xl">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">সাইট নাম</label><input id="ss-name-in" class="ai"></div>
+          <div><label class="al">টেলিগ্রাম URL</label><input id="ss-tg-in" class="ai"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="al">ফেসবুক URL</label><input id="ss-fb-in" class="ai"></div>
+          <div><label class="al">ইউটিউব URL</label><input id="ss-yt-in" class="ai"></div>
+        </div>
+        <div><label class="al">ফুটার ট্যাগলাইন</label><input id="ss-tagline-in" class="ai"></div>
+        <div><label class="al">কপিরাইট টেক্সট</label><input id="ss-copy-in" class="ai"></div>
+        <div><label class="al">পেজ টাইটেল (Browser Tab)</label><input id="ss-ptitle-in" class="ai"></div>
+        <div class="border-t border-indigo-900/40 pt-3">
+          <p class="text-indigo-400 text-xs font-bold mb-2">স্ট্যাটস বার (হোম পেজ)</p>
+          <div id="stats-editor-el" class="space-y-2"></div>
+          <button onclick="addStatRow()" class="ab abg text-xs mt-2">+ স্ট্যাট যোগ</button>
+        </div>
+        <div class="pt-2"><button onclick="saveSiteSettings()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সব সেভ করুন</button></div>
+      </div>
+    </div>
+
+    <!-- CONDITIONS -->
+    <div id="as-cond-mgr" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">শর্তাবলী সম্পাদনা</h2></div>
+      <div id="cond-admin-list-el" class="space-y-2 max-w-2xl mb-4"></div>
+      <div class="acard max-w-2xl">
+        <p class="text-indigo-300 text-sm font-bold mb-3">নতুন সেকশন যোগ করুন</p>
+        <div class="grid grid-cols-2 gap-3 mb-2">
+          <div><label class="al">শিরোনাম</label><input id="cnd-title-in" class="ai"></div>
+          <div><label class="al">আইকন (lucide নাম)</label><input id="cnd-icon-in" class="ai" placeholder="shield-alert"></div>
+        </div>
+        <div class="mb-2"><label class="al">বিষয়বস্তু</label><textarea id="cnd-text-in" class="ai h-16 resize-none"></textarea></div>
+        <div class="mb-3"><label class="al">আইকন কালার (text-red-500...)</label><input id="cnd-color-in" class="ai" placeholder="text-red-500"></div>
+        <button onclick="addCond()" class="ab abp text-xs">যোগ করুন</button>
+      </div>
+    </div>
+
+    <!-- CONTACTS -->
+    <div id="as-contact-mgr" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">যোগাযোগ তথ্য</h2></div>
+      <div id="contact-admin-list-el" class="space-y-2 max-w-2xl mb-4"></div>
+      <div class="acard max-w-2xl">
+        <p class="text-indigo-300 text-sm font-bold mb-3">নতুন যোগাযোগ যোগ করুন</p>
+        <div class="grid grid-cols-2 gap-3 mb-2">
+          <div><label class="al">লেবেল</label><input id="ct-label-in" class="ai"></div>
+          <div><label class="al">ভ্যালু / লিংক</label><input id="ct-value-in" class="ai"></div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div><label class="al">টাইপ (email/telegram/phone)</label><input id="ct-type-in" class="ai" placeholder="email"></div>
+          <div><label class="al">আইকন (lucide নাম)</label><input id="ct-icon-in" class="ai" placeholder="mail"></div>
+        </div>
+        <button onclick="addContact()" class="ab abp text-xs">যোগ করুন</button>
+      </div>
+    </div>
+
+    <!-- CHANNEL SETTINGS -->
+    <div id="as-channel-settings" class="asec">
+      <div class="border-b border-indigo-900/50 pb-4 mb-5"><h2 class="text-xl font-bold text-white">চ্যানেল সেটিংস</h2></div>
+      <div class="space-y-3 max-w-lg">
+        <div><label class="al">চ্যানেল বিবরণ</label><input id="ch-desc-in" class="ai" placeholder="নতুন মেথড ও টিপস পান সবার আগে।"></div>
+        <div><label class="al">মেম্বার কাউন্ট (প্রদর্শন)</label><input id="ch-mem-in" class="ai" placeholder="৫,০০০+ মেম্বার"></div>
+        <button onclick="saveChannelSettings()" class="ab abp flex items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> সেভ করুন</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<script type="module">
-// ══════════════════════════════════════════
-// FIREBASE INIT
-// ══════════════════════════════════════════
-const { initializeApp, getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, setDoc, getDoc, query, orderBy, onSnapshot, getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } = window.__firebase__;
-
-let db, auth, app;
-
-function initFirebase(config) {
-    try {
-        app  = initializeApp(config);
-        db   = getFirestore(app);
-        auth = getAuth(app);
-        return true;
-    } catch(e) { console.error(e); return false; }
-}
-
-// ── Load saved config ──
-const savedCfg = localStorage.getItem('fb_cfg');
-if (savedCfg) {
-    const cfg = JSON.parse(savedCfg);
-    if (initFirebase(cfg)) {
-        document.getElementById('firebase-setup').style.display = 'none';
-        startApp();
-    }
-}
-
-// ── First-time setup ──
-window.saveFirebaseConfig = async () => {
-    const msg = document.getElementById('setup-msg');
-    msg.textContent = 'সংযোগ করা হচ্ছে...';
-
-    const cfg = {
-        apiKey:            document.getElementById('setup-apiKey').value.trim(),
-        authDomain:        document.getElementById('setup-authDomain').value.trim(),
-        projectId:         document.getElementById('setup-projectId').value.trim(),
-        storageBucket:     document.getElementById('setup-authDomain').value.trim().replace('firebaseapp.com','appspot.com'),
-        messagingSenderId: '000000000000',
-        appId:             '1:000000000000:web:0000000000000000'
-    };
-
-    const email = document.getElementById('setup-email').value.trim();
-    const pw    = document.getElementById('setup-password').value;
-
-    if (!cfg.apiKey || !cfg.projectId || !email || !pw) {
-        msg.textContent = '⚠ সব ঘর পূরণ করুন!'; return;
-    }
-
-    if (!initFirebase(cfg)) { msg.textContent = '❌ Firebase Config ভুল!'; return; }
-
-    try {
-        msg.textContent = 'অ্যাকাউন্ট চেক করা হচ্ছে...';
-        // Try login (in case user already exists)
-        try { 
-            await signInWithEmailAndPassword(auth, email, pw); 
-        }
-        catch (e) {
-            // Create user
-            await createUserWithEmailAndPassword(auth, email, pw);
-        }
-
-        localStorage.setItem('fb_cfg', JSON.stringify(cfg));
-        localStorage.setItem('fb_admin_email', email);
-
-        // Seed default data
-        msg.textContent = 'ডিফল্ট ডেটা সেটআপ হচ্ছে...';
-        await seedDefaultData();
-
-        document.getElementById('firebase-setup').style.display = 'none';
-        toast('সেটআপ সফল! স্বাগতম MethodMaster এ।');
-        startApp();
-
-    } catch(e) {
-        msg.textContent = '❌ Error: ' + e.message;
-    }
+<!-- ════ JAVASCRIPT ════ -->
+<script>
+// ╔══════════════════════════════════════════════╗
+// ║  FIREBASE CONFIG — এখানে আপনার config দিন  ║
+// ╚══════════════════════════════════════════════╝
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyCxTrDeQo1c9cuXQl9Yh7jUTDFRG6MpnRE",
+  authDomain:        "methodmaster-cf91d.firebaseapp.com",
+  projectId:         "methodmaster-cf91d",
+  storageBucket:     "methodmaster-cf91d.firebasestorage.app",
+  messagingSenderId: "959630928683",
+  appId:             "1:959630928683:web:fce81252d59d8900f0336e"
 };
 
-async function seedDefaultData() {
-    // Settings
-    await setDoc(doc(db,'settings','hero'), { badge:'লাইভ মেথড আপডেট ২০২৫', t1:'দক্ষতা বাড়ান,', t2:'আয় করুন স্মার্টলি', desc:'আমরা দিচ্ছি ১০০% পরীক্ষিত অনলাইন ইনকাম মেথড এবং প্রিমিয়াম রিসোর্স।', chartLabel:'স্টুডেন্ট আর্নিং রিপোর্ট', chartAmount:'৳১,২০,০০০+', chartGrowth:'+২৮%', rating:'৪.৯/৫' });
-    await setDoc(doc(db,'settings','site'), { name:'MethodMaster', tg:'https://t.me/your_telegram', fb:'https://facebook.com', yt:'https://youtube.com', tagline:'আপনার ডিজিটাল স্কিল শেখার বিশ্বস্ত সঙ্গী।', copy:'© ২০২৫ MethodMaster. সর্বস্বত্ব সংরক্ষিত।', ptitle:'MethodMaster - আধুনিক ডিজিটাল লার্নিং' });
-    await setDoc(doc(db,'settings','stats'), { items:[{icon:'users',val:'৫০০০+',lbl:'সক্রিয় স্টুডেন্ট'},{icon:'book-open',val:'১৫+',lbl:'প্রিমিয়াম কোর্স'},{icon:'star',val:'৪.৯/৫',lbl:'গড় রেটিং'},{icon:'award',val:'৯৮%',lbl:'সফলতার হার'}] });
-    await setDoc(doc(db,'settings','channel'), { desc:'নতুন মেথড, টিপস ও এক্সক্লুসিভ আপডেট পান সবার আগে।', members:'৫,০০০+ মেম্বার' });
+// ╔══════════════════════════════════════════════╗
+// ║  ADMIN EMAIL — এখানে আপনার email দিন        ║
+// ╚══════════════════════════════════════════════╝
+const ADMIN_EMAIL = "momdelmia60@gmail.com";
 
-    // Default courses
-    const courses = [
-        { title:'CPA মার্কেটিং সিক্রেট মেথড', category:'মার্কেটিং', description:'পেইড ট্রাফিক ব্যবহার করে প্রতিদিন $৫০+ আয় করুন।', image:'https://placehold.co/600x400/818cf8/ffffff?text=CPA+Marketing', price:'২,৫০০', originalPrice:'৫,০০০', students:'৫২০+', rating:'৪.৯', features:['১০ ঘণ্টা ভিডিও','ট্রাফিক সোর্স লিস্ট','লাইফটাইম আপডেট'], topics:['CPA বেসিক','অফার সিলেকশন','ফেসবুক অ্যাডস','ফ্রি ট্রাফিক'], order:1 },
-        { title:'ইউটিউব অটোমেশন মাস্টারি', category:'প্যাসিভ ইনকাম', description:'চেহারা না দেখিয়ে ইউটিউব থেকে আয় করুন।', image:'https://placehold.co/600x400/a78bfa/ffffff?text=YouTube+Auto', price:'৩,০০০', originalPrice:'৬,০০০', students:'৩৫০+', rating:'৪.৮', features:['৮ ঘণ্টা ভিডিও','AI টুলস লিস্ট','SEO গাইড'], topics:['নিশ সিলেকশন','AI স্ক্রিপ্ট','থাম্বনেইল'], order:2 },
-        { title:'ফেসবুক অ্যাডস হ্যাকস', category:'অ্যাডভার্টাইজিং', description:'কম খরচে হাই কনভার্সন সেলস জেনারেট করুন।', image:'https://placehold.co/600x400/ec4899/ffffff?text=Ads+Mastery', price:'১,৫০০', originalPrice:'৩,০০০', students:'৭০০+', rating:'৪.৭', features:['৫ ঘণ্টা ভিডিও','অডিয়েন্স চিটশিট','পিক্সেল গাইড'], topics:['বিজনেস ম্যানেজার','টার্গেটিং','রিমার্কেটিং'], order:3 }
-    ];
-    for (const c of courses) await addDoc(collection(db,'courses'), c);
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const gv = id => $(id)?.value?.trim() || '';
+const sv = (id, v) => { const e = $(id); if (e) e.value = v || ''; };
+const sts = (id, txt) => { const e = $(id); if (e && txt !== undefined) e.textContent = txt; };
 
-    // Default tools
-    const tools = [
-        { name:'Canva Pro', category:'ডিজাইন', description:'প্রফেশনাল গ্রাফিক্স ও থাম্বনেইল তৈরির সহজ টুল।', link:'https://canva.com', icon:'image', badge:'ফ্রি', color:'pink', order:1 },
-        { name:'ChatGPT', category:'AI টুলস', description:'কনটেন্ট রাইটিং ও আইডিয়া জেনারেশনে সেরা AI।', link:'https://chat.openai.com', icon:'bot', badge:'ফ্রি', color:'green', order:2 },
-        { name:'CapCut', category:'ভিডিও এডিটিং', description:'মোবাইল ও PC তে প্রফেশনাল ভিডিও এডিট।', link:'https://capcut.com', icon:'video', badge:'ফ্রি', color:'purple', order:3 }
-    ];
-    for (const t of tools) await addDoc(collection(db,'tools'), t);
-
-    // Default payment methods
-    const pms = [
-        { name:'Bkash', number:'01700-000000', type:'Send Money', color:'pink', order:1 },
-        { name:'Nagad', number:'01800-000000', type:'Send Money', color:'orange', order:2 }
-    ];
-    for (const pm of pms) await addDoc(collection(db,'paymentMethods'), pm);
-
-    // Default conditions
-    const conds = [
-        { title:'কপিরাইট পলিসি', icon:'shield-alert', color:'text-red-500', text:'আমাদের কনটেন্ট শেয়ার বা রি-সেল করা সম্পূর্ণ নিষিদ্ধ।', order:1 },
-        { title:'রিফান্ড পলিসি', icon:'refresh-ccw', color:'text-orange-500', text:'ডিজিটাল প্রোডাক্ট হওয়ায় পেমেন্টের পর রিফান্ড প্রযোজ্য নয়।', order:2 }
-    ];
-    for (const c of conds) await addDoc(collection(db,'conditions'), c);
-
-    // Default contact
-    await addDoc(collection(db,'contacts'), { label:'ইমেইল সাপোর্ট', value:'support@methodmaster.com', type:'email', icon:'mail' });
-    await addDoc(collection(db,'contacts'), { label:'টেলিগ্রাম', value:'https://t.me/your_telegram', type:'telegram', icon:'send' });
-
-    // Default reviews
-    const rvs = [
-        { name:'রাহিম উদ্দিন', role:'ফ্রিল্যান্সার, ঢাকা', text:'CPA কোর্সটি নেওয়ার পর প্রথম মাসেই $৩০০ আয় করতে পেরেছি!', rating:5 },
-        { name:'সুমাইয়া বেগম', role:'গৃহিণী, চট্টগ্রাম', text:'ঘরে বসেই আয় করার স্বপ্ন পূরণ হয়েছে। ধন্যবাদ!', rating:5 },
-        { name:'আরিফ হোসেন', role:'স্টুডেন্ট, সিলেট', text:'ফেসবুক অ্যাডস কোর্সের পর ক্লায়েন্ট পেতে কোনো সমস্যা নেই।', rating:5 }
-    ];
-    for (const r of rvs) await addDoc(collection(db,'reviews'), r);
+function showToast(msg, type = 'ok') {
+  const e = $('toast-el');
+  e.textContent = msg;
+  e.className = 'toast-el show' + (type === 'err' ? ' err' : '');
+  setTimeout(() => e.classList.remove('show'), 3500);
 }
 
-// ══════════════════════════════════════════
-// APP START
-// ══════════════════════════════════════════
-let SITE={}, HERO={}, STATS=[], isAdmin=false;
+// ══════════════════════════════════════════════════
+// FIREBASE INIT & APP START
+// ══════════════════════════════════════════════════
+let db, auth;
+let SITE = {}, HERO = {}, STATS = [];
+let allCourses = [], allTools = [];
+let isAdmin = false, curCourse = null;
 
-async function startApp() {
+window.addEventListener('load', () => {
+  lucide.createIcons();
+
+  // Check if config is filled
+  if (FIREBASE_CONFIG.apiKey === "YOUR_API_KEY") {
+    $('loading-screen').innerHTML = `
+      <div class="text-center max-w-md px-6">
+        <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="settings" class="w-7 h-7 text-white"></i>
+        </div>
+        <h2 class="text-xl font-bold text-slate-800 mb-2">Firebase Config প্রয়োজন</h2>
+        <p class="text-slate-500 text-sm leading-relaxed mb-4">HTML ফাইলটি Notepad দিয়ে খুলুন এবং <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">FIREBASE_CONFIG</code> এ আপনার Firebase তথ্য দিন।</p>
+        <div class="bg-slate-50 rounded-xl p-4 text-left text-xs text-slate-600 leading-loose">
+          1. Firebase Console → Project Settings<br>
+          2. Your Apps → Web App → Config copy করুন<br>
+          3. HTML ফাইলে FIREBASE_CONFIG এ paste করুন<br>
+          4. ADMIN_EMAIL এ আপনার email দিন
+        </div>
+      </div>`;
     lucide.createIcons();
-    setupNavListeners();
-    initChart();
+    return;
+  }
 
-    // Auth listener
-    onAuthStateChanged(auth, user => { isAdmin = !!user; });
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    auth = firebase.auth();
+    auth.onAuthStateChanged(user => { isAdmin = !!user; });
+    initApp();
+  } catch (e) {
+    if (e.code === 'app/duplicate-app') {
+      db = firebase.firestore();
+      auth = firebase.auth();
+      auth.onAuthStateChanged(user => { isAdmin = !!user; });
+      initApp();
+    } else {
+      $('loading-screen').innerHTML = `<p class="text-red-500 font-semibold text-sm">Error: ${e.message}</p>`;
+    }
+  }
+});
 
-    // Load all data
-    await Promise.all([loadSettings(), loadCourses(), loadTools(), loadPosts(), loadConditions(), loadContacts(), loadReviews()]);
-    showPage('home');
+async function initApp() {
+  setupNav();
+  initChart();
+  try {
+    await Promise.all([loadSettings(), loadCourses(), loadTools(), loadPosts(), loadReviews(), loadConditions(), loadContacts()]);
+  } catch(e) { console.error('Load error:', e); }
+  $('loading-screen').style.display = 'none';
+  showPage('home');
 }
 
+// ══════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════
 async function loadSettings() {
-    try {
-        const heroSnap = await getDoc(doc(db,'settings','hero'));
-        const siteSnap = await getDoc(doc(db,'settings','site'));
-        const statsSnap = await getDoc(doc(db,'settings','stats'));
-        const chSnap = await getDoc(doc(db,'settings','channel'));
-
-        if (heroSnap.exists()) {
-            HERO = heroSnap.data();
-            applyHero(HERO);
-        }
-        if (siteSnap.exists()) {
-            SITE = siteSnap.data();
-            applySite(SITE);
-        }
-        if (statsSnap.exists()) {
-            STATS = statsSnap.data().items || [];
-            renderStatsBar(STATS);
-        }
-        if (chSnap.exists()) {
-            const ch = chSnap.data();
-            const d = document.getElementById('ch-desc-txt'); if(d) d.textContent = ch.desc||'';
-            const m = document.getElementById('ch-members-txt'); if(m) m.textContent = ch.members||'';
-        }
-    } catch(e) { console.error('Settings load error', e); }
+  const [hSnap, sSnap, stSnap, chSnap] = await Promise.all([
+    db.collection('settings').doc('hero').get(),
+    db.collection('settings').doc('site').get(),
+    db.collection('settings').doc('stats').get(),
+    db.collection('settings').doc('channel').get()
+  ]);
+  if (hSnap.exists) { HERO = hSnap.data(); applyHero(); }
+  if (sSnap.exists) { SITE = sSnap.data(); applySite(); }
+  if (stSnap.exists) { STATS = stSnap.data().items || []; renderStatsBar(); }
+  if (chSnap.exists) {
+    const ch = chSnap.data();
+    sts('ch-desc-el', ch.desc);
+    sts('ch-members-el', ch.members);
+  }
 }
 
-function applyHero(h) {
-    const setTxt = (id, val) => { const e = document.getElementById(id); if(e && val) e.textContent = val; };
-    const badge = document.getElementById('hero-badge');
-    if (badge && h.badge) badge.innerHTML = `<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> ${h.badge}`;
-    setTxt('hero-t1', h.t1);
-    setTxt('hero-t2', h.t2);
-    setTxt('hero-desc', h.desc);
-    setTxt('chart-label', h.chartLabel);
-    setTxt('chart-amount', h.chartAmount);
-    setTxt('chart-growth', h.chartGrowth);
-    setTxt('hero-rating', h.rating);
+function applyHero() {
+  const h = HERO;
+  const b = $('hero-badge-el');
+  if (b && h.badge) b.innerHTML = `<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> ${h.badge}`;
+  sts('hero-t1-el', h.t1);
+  sts('hero-t2-el', h.t2);
+  sts('hero-desc-el', h.desc);
+  sts('chart-label-el', h.chartLabel);
+  sts('chart-amount-el', h.chartAmount);
+  sts('chart-growth-el', h.chartGrowth);
+  sts('hero-rating-el', h.rating);
 }
 
-function applySite(s) {
-    document.title = s.ptitle || 'MethodMaster';
-    const setTxt = (id, val) => { const e = document.getElementById(id); if(e && val) e.textContent = val; };
-    setTxt('site-name-header', s.name);
-    setTxt('footer-name', s.name);
-    setTxt('footer-tagline', s.tagline);
-    setTxt('footer-copy', s.copy);
-    const tg = document.getElementById('header-tg'); if(tg) tg.href = s.tg||'#';
-    const ctl = document.getElementById('ch-tglink'); if(ctl) ctl.href = s.tg||'#';
-    const fs = document.getElementById('footer-social');
-    if (fs) fs.innerHTML = `<a href="${s.fb||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="facebook" class="w-5 h-5"></i></a><a href="${s.yt||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="youtube" class="w-5 h-5"></i></a><a href="${s.tg||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="send" class="w-5 h-5"></i></a>`;
+function applySite() {
+  const s = SITE;
+  if (s.ptitle) document.title = s.ptitle;
+  sts('site-name-el', s.name);
+  sts('footer-name-el', s.name);
+  sts('footer-tagline-el', s.tagline);
+  sts('footer-copy-el', s.copy);
+  const tg = $('header-tg'); if (tg) tg.href = s.tg || '#';
+  const ctl = $('ch-tglink-el'); if (ctl) ctl.href = s.tg || '#';
+  const fs = $('footer-social-el');
+  if (fs) {
+    fs.innerHTML = `
+      <a href="${s.fb||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+      <a href="${s.yt||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+      <a href="${s.tg||'#'}" target="_blank" class="hover:text-white transition"><i data-lucide="send" class="w-5 h-5"></i></a>`;
     lucide.createIcons();
+  }
 }
 
-function renderStatsBar(stats) {
-    const el = document.getElementById('stats-bar'); if(!el) return;
-    el.innerHTML = stats.map(s => `<div class="bg-white rounded-2xl p-5 border border-indigo-50 shadow-sm flex items-center gap-4"><div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${s.icon}" class="w-5 h-5 text-white"></i></div><div><p class="text-2xl font-extrabold text-slate-900">${s.val}</p><p class="text-slate-500 text-sm">${s.lbl}</p></div></div>`).join('');
-    lucide.createIcons();
+function renderStatsBar() {
+  const el = $('stats-bar-el'); if (!el) return;
+  el.innerHTML = STATS.map(s => `
+    <div class="bg-white rounded-2xl p-5 border border-indigo-50 shadow-sm flex items-center gap-4">
+      <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center shrink-0">
+        <i data-lucide="${s.icon}" class="w-5 h-5 text-white"></i>
+      </div>
+      <div><p class="text-2xl font-extrabold text-slate-900">${s.val}</p><p class="text-slate-500 text-sm">${s.lbl}</p></div>
+    </div>`).join('');
+  lucide.createIcons();
 }
 
-// ── COURSES ──
-let allCourses = [];
+// ══════════════════════════════════════════════════
+// COURSES
+// ══════════════════════════════════════════════════
 async function loadCourses() {
-    try {
-        const snap = await getDocs(query(collection(db,'courses'), orderBy('order')));
-        allCourses = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        renderCourses();
-        renderCatFilter();
-    } catch(e) { console.error('Courses error', e); }
+  const snap = await db.collection('courses').get();
+  allCourses = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
+  renderCourses();
+  renderCatFilter();
 }
 
 const CLR = { indigo:'bg-indigo-100 text-indigo-600', green:'bg-green-100 text-green-600', pink:'bg-pink-100 text-pink-600', purple:'bg-purple-100 text-purple-600', amber:'bg-amber-100 text-amber-600', orange:'bg-orange-100 text-orange-600' };
 const BDGCLR = { 'ফ্রি':'bg-green-100 text-green-700', 'প্রিমিয়াম':'bg-indigo-100 text-indigo-700', 'ক্রেক':'bg-red-100 text-red-700' };
 
-function courseCardHTML(c) {
-    return `<div class="group bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-1">
-        <div class="relative overflow-hidden"><img src="${c.image||'https://placehold.co/600x400/818cf8/ffffff?text=Course'}" class="w-full h-52 object-cover transition duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400/818cf8/ffffff?text=Course'">
-        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-indigo-600">${c.category}</div></div>
-        <div class="p-6">
-            <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-indigo-600 transition">${c.title}</h3>
-            <p class="text-slate-500 text-sm mb-4 line-clamp-2">${c.description}</p>
-            <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 font-medium">
-                <span class="flex items-center"><i data-lucide="users" class="w-3 h-3 mr-1"></i>${c.students||'০+'}</span>
-                <span class="flex items-center text-yellow-500"><i data-lucide="star" class="w-3 h-3 mr-1 fill-current"></i>${c.rating||'৪.৯'}</span>
-            </div>
-            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
-                <div><span class="text-2xl font-black text-indigo-600">৳${c.price}</span><span class="text-sm text-slate-400 line-through ml-1">৳${c.originalPrice}</span></div>
-                <button onclick="openDetails('${c.id}')" class="bg-slate-900 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-indigo-600 transition">বিস্তারিত</button>
-            </div>
+function courseCard(c) {
+  return `<div class="group bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
+    <div class="relative overflow-hidden">
+      <img src="${c.image || 'https://placehold.co/600x400/818cf8/ffffff?text=Course'}" class="w-full h-52 object-cover transition duration-500 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400/818cf8/ffffff?text=Course'">
+      <div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-indigo-600">${c.category}</div>
+    </div>
+    <div class="p-6">
+      <h3 class="text-xl font-bold mb-2 text-slate-800 group-hover:text-indigo-600 transition">${c.title}</h3>
+      <p class="text-slate-500 text-sm mb-4 line-clamp-2">${c.description}</p>
+      <div class="flex items-center gap-4 text-xs text-slate-400 mb-4 font-medium">
+        <span class="flex items-center"><i data-lucide="users" class="w-3 h-3 mr-1"></i>${c.students || '০+'}</span>
+        <span class="flex items-center text-yellow-500"><i data-lucide="star" class="w-3 h-3 mr-1 fill-current"></i>${c.rating || '৪.৯'}</span>
+      </div>
+      <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+        <div>
+          <span class="text-2xl font-black text-indigo-600">৳${c.price}</span>
+          <span class="text-sm text-slate-400 line-through ml-1">৳${c.originalPrice}</span>
         </div>
-    </div>`;
+        <button onclick="openDetails('${c.id}')" class="bg-slate-900 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-indigo-600 transition">বিস্তারিত</button>
+      </div>
+    </div>
+  </div>`;
 }
 
-function renderCourses(filtered) {
-    const src = filtered || allCourses;
-    const fg = document.getElementById('featured-grid'); if(fg) fg.innerHTML = src.slice(0,3).map(courseCardHTML).join('');
-    const ag = document.getElementById('all-courses-grid'); if(ag) ag.innerHTML = src.length ? src.map(courseCardHTML).join('') : '<p class="col-span-3 text-center text-slate-400 py-12">কোনো কোর্স নেই</p>';
-    lucide.createIcons();
+function renderCourses(src) {
+  const list = src || allCourses;
+  const fg = $('featured-grid-el'); if (fg) fg.innerHTML = list.slice(0, 3).map(courseCard).join('');
+  const ag = $('all-courses-el');
+  if (ag) ag.innerHTML = list.length ? list.map(courseCard).join('') : '<p class="col-span-3 text-center text-slate-400 py-12">কোনো কোর্স নেই</p>';
+  lucide.createIcons();
 }
 
 function renderCatFilter() {
-    const cats = ['সব', ...new Set(allCourses.map(c=>c.category))];
-    const el = document.getElementById('cat-filter'); if(!el) return;
-    el.innerHTML = cats.map((c,i) => `<button onclick="filterCat('${c}')" class="fcat px-4 py-2 rounded-full text-sm font-bold border transition ${i===0?'bg-indigo-600 text-white border-indigo-600':'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}" data-cat="${c}">${c}</button>`).join('');
+  const cats = ['সব', ...new Set(allCourses.map(c => c.category))];
+  const el = $('cat-filter-el'); if (!el) return;
+  el.innerHTML = cats.map((c, i) => `<button onclick="filterCat('${c}')" class="fcat px-4 py-2 rounded-full text-sm font-bold border transition ${i === 0 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}" data-cat="${c}">${c}</button>`).join('');
 }
-window.filterCat = (cat) => {
-    document.querySelectorAll('.fcat').forEach(b => { const a=b.dataset.cat===cat; b.className=`fcat px-4 py-2 rounded-full text-sm font-bold border transition ${a?'bg-indigo-600 text-white border-indigo-600':'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}`; });
-    renderCourses(cat==='সব' ? allCourses : allCourses.filter(c=>c.category===cat));
+
+window.filterCat = cat => {
+  document.querySelectorAll('.fcat').forEach(b => {
+    const a = b.dataset.cat === cat;
+    b.className = `fcat px-4 py-2 rounded-full text-sm font-bold border transition ${a ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}`;
+  });
+  renderCourses(cat === 'সব' ? allCourses : allCourses.filter(c => c.category === cat));
 };
 
-window.openDetails = (id) => {
-    const c = allCourses.find(x => x.id===id); if(!c) return;
-    document.getElementById('details-content').innerHTML = `
-        <section class="bg-slate-900 text-white py-16 md:py-24 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500 rounded-full blur-[100px] opacity-20 translate-x-1/3 -translate-y-1/3"></div>
-            <div class="container mx-auto px-6 relative z-10">
-                <button onclick="showPage('courses')" class="mb-6 flex items-center text-slate-400 hover:text-white transition font-medium"><i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> ব্যাকে যান</button>
-                <div class="flex flex-col md:flex-row gap-12 items-start">
-                    <div class="md:w-2/3">
-                        <span class="bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block">${c.category}</span>
-                        <h1 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">${c.title}</h1>
-                        <p class="text-lg text-slate-300 mb-8 leading-relaxed">${c.description}</p>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-slate-800 pt-8">
-                            <div><p class="text-slate-400 text-xs uppercase font-bold">ছাত্র</p><p class="text-xl font-bold text-white mt-1">${c.students||'০+'}</p></div>
-                            <div><p class="text-slate-400 text-xs uppercase font-bold">ডিউরেশন</p><p class="text-xl font-bold text-white mt-1">১০+ ঘণ্টা</p></div>
-                            <div><p class="text-slate-400 text-xs uppercase font-bold">ভাষা</p><p class="text-xl font-bold text-white mt-1">বাংলা</p></div>
-                            <div><p class="text-slate-400 text-xs uppercase font-bold">রেটিং</p><p class="text-xl font-bold text-white mt-1">⭐ ${c.rating||'৪.৯'}</p></div>
-                        </div>
-                    </div>
-                    <div class="md:w-1/3 w-full bg-white rounded-2xl p-6 shadow-2xl text-slate-800">
-                        <img src="${c.image||'https://placehold.co/600x400/818cf8/ffffff?text=Course'}" class="w-full rounded-xl mb-6 shadow-md">
-                        <div class="text-3xl font-black text-indigo-600 mb-2">৳${c.price} <span class="text-lg text-slate-400 font-normal line-through">৳${c.originalPrice}</span></div>
-                        <button onclick="goPayment('${c.id}')" class="block w-full gradient-bg text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition mb-4 text-center">এখনই কিনুন</button>
-                        <p class="text-center text-xs text-slate-500">৩০ দিনের মানি-ব্যাক গ্যারান্টি</p>
-                    </div>
-                </div>
+window.openDetails = id => {
+  const c = allCourses.find(x => x.id === id); if (!c) return;
+  $('details-content-el').innerHTML = `
+    <section class="bg-slate-900 text-white py-16 md:py-24 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500 rounded-full blur-[100px] opacity-20 translate-x-1/3 -translate-y-1/3"></div>
+      <div class="container mx-auto px-6 relative z-10">
+        <button onclick="showPage('courses')" class="mb-6 flex items-center text-slate-400 hover:text-white transition font-medium">
+          <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> ব্যাকে যান
+        </button>
+        <div class="flex flex-col md:flex-row gap-12 items-start">
+          <div class="md:w-2/3">
+            <span class="bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 inline-block">${c.category}</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">${c.title}</h1>
+            <p class="text-lg text-slate-300 mb-8 leading-relaxed">${c.description}</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-slate-800 pt-8">
+              <div><p class="text-slate-400 text-xs uppercase font-bold">ছাত্র সংখ্যা</p><p class="text-xl font-bold text-white mt-1">${c.students || '০+'}</p></div>
+              <div><p class="text-slate-400 text-xs uppercase font-bold">ডিউরেশন</p><p class="text-xl font-bold text-white mt-1">১০+ ঘণ্টা</p></div>
+              <div><p class="text-slate-400 text-xs uppercase font-bold">ভাষা</p><p class="text-xl font-bold text-white mt-1">বাংলা</p></div>
+              <div><p class="text-slate-400 text-xs uppercase font-bold">রেটিং</p><p class="text-xl font-bold text-white mt-1">⭐ ${c.rating || '৪.৯'}</p></div>
             </div>
-        </section>
-        <section class="container mx-auto px-6 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div class="md:col-span-2">
-                    <h2 class="text-2xl font-bold mb-6 text-slate-900">কোর্স কারিকুলাম</h2>
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-10"><ul class="divide-y divide-slate-100">
-                        ${(c.topics||[]).map((t,i)=>`<li class="p-5 flex items-start hover:bg-slate-50 group"><div class="bg-indigo-50 text-indigo-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm mr-4 mt-0.5 shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition">${i+1}</div><div><h4 class="font-bold text-slate-700">${t}</h4><p class="text-xs text-slate-400 mt-1 flex items-center gap-1"><i data-lucide="play-circle" class="w-3 h-3"></i>ভিডিও টিউটোরিয়াল</p></div></li>`).join('')}
-                    </ul></div>
-                    <h2 class="text-2xl font-bold mb-6 text-slate-900">কোর্সের সুবিধাসমূহ</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        ${(c.features||[]).map(f=>`<div class="flex items-center gap-3 bg-indigo-50 p-4 rounded-xl"><i data-lucide="check-circle-2" class="text-indigo-600 w-5 h-5"></i><span class="font-semibold text-slate-700">${f}</span></div>`).join('')}
-                    </div>
-                </div>
-                <div>
-                    <div class="bg-slate-900 text-white rounded-2xl p-8 text-center sticky top-24">
-                        <h3 class="text-xl font-bold mb-4">কোনো প্রশ্ন আছে?</h3>
-                        <a href="${SITE.tg||'#'}" target="_blank" class="flex items-center justify-center w-full bg-white text-slate-900 py-3 rounded-xl font-bold hover:bg-indigo-50 transition"><i data-lucide="send" class="w-4 h-4 mr-2"></i>টেলিগ্রামে মেসেজ দিন</a>
-                    </div>
-                </div>
-            </div>
-        </section>`;
-    lucide.createIcons();
-    showPage('details');
+          </div>
+          <div class="md:w-1/3 w-full bg-white rounded-2xl p-6 shadow-2xl text-slate-800">
+            <img src="${c.image || 'https://placehold.co/600x400/818cf8/ffffff?text=Course'}" class="w-full rounded-xl mb-6 shadow-md">
+            <div class="text-3xl font-black text-indigo-600 mb-2">৳${c.price} <span class="text-lg text-slate-400 font-normal line-through">৳${c.originalPrice}</span></div>
+            <button onclick="goPayment('${c.id}')" class="block w-full gradient-bg text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:opacity-90 transition mb-4 text-center">এখনই কিনুন</button>
+            <p class="text-center text-xs text-slate-500">৩০ দিনের মানি-ব্যাক গ্যারান্টি</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="container mx-auto px-6 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div class="md:col-span-2">
+          <h2 class="text-2xl font-bold mb-6 text-slate-900">এই কোর্সে যা যা শিখবেন</h2>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <ul class="divide-y divide-slate-100">
+              ${(c.topics || []).map((t, i) => `
+                <li class="p-5 flex items-start hover:bg-slate-50 transition group">
+                  <div class="bg-indigo-50 text-indigo-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm mr-4 mt-0.5 shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition">${i + 1}</div>
+                  <div><h4 class="font-bold text-slate-700 group-hover:text-indigo-700 transition">${t}</h4>
+                  <p class="text-xs text-slate-400 mt-1 flex items-center gap-1"><i data-lucide="play-circle" class="w-3 h-3"></i> ভিডিও টিউটোরিয়াল</p></div>
+                </li>`).join('')}
+            </ul>
+          </div>
+          <h2 class="text-2xl font-bold mt-12 mb-6 text-slate-900">কোর্সের সুবিধাসমূহ</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ${(c.features || []).map(f => `
+              <div class="flex items-center gap-3 bg-indigo-50 p-4 rounded-xl">
+                <i data-lucide="check-circle-2" class="text-indigo-600 w-5 h-5"></i>
+                <span class="font-semibold text-slate-700">${f}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="bg-slate-900 text-white rounded-2xl p-8 text-center sticky top-24">
+            <h3 class="text-xl font-bold mb-4">কোনো প্রশ্ন আছে?</h3>
+            <p class="text-slate-400 mb-6 text-sm">টেলিগ্রামে মেসেজ দিন।</p>
+            <a href="${SITE.tg || '#'}" target="_blank" class="flex items-center justify-center w-full bg-white text-slate-900 py-3 rounded-xl font-bold hover:bg-indigo-50 transition">
+              <i data-lucide="send" class="w-4 h-4 mr-2"></i> টেলিগ্রামে মেসেজ দিন
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  lucide.createIcons();
+  showPage('details');
 };
 
-// ── PAYMENT ──
-let currentCourse = null;
-window.goPayment = (id) => {
-    currentCourse = allCourses.find(x => x.id===id);
-    if (!currentCourse) return;
-    document.getElementById('pay-cname').textContent = currentCourse.title;
-    document.getElementById('pay-cprice').textContent = '৳' + currentCourse.price;
-    renderPMList();
-    showPage('payment');
+// ══════════════════════════════════════════════════
+// PAYMENT
+// ══════════════════════════════════════════════════
+window.goPayment = id => {
+  curCourse = allCourses.find(x => x.id === id);
+  if (!curCourse) return;
+  sts('pay-cname-el', curCourse.title);
+  sts('pay-cprice-el', '৳' + curCourse.price);
+  renderPMList();
+  showPage('payment');
 };
 
 async function renderPMList() {
-    const el = document.getElementById('pm-list'); if(!el) return;
-    try {
-        const snap = await getDocs(collection(db,'paymentMethods'));
-        const pms = snap.docs.map(d => d.data());
-        const PMCLR = {pink:'bg-pink-100 text-pink-600',orange:'bg-orange-100 text-orange-600',yellow:'bg-yellow-100 text-yellow-600',indigo:'bg-indigo-100 text-indigo-600'};
-        el.innerHTML = pms.map(pm => `<div class="group bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 transition cursor-pointer flex justify-between items-center" onclick="copyTxt('${pm.number}')">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 ${PMCLR[pm.color]||PMCLR.indigo} rounded-lg flex items-center justify-center font-bold text-xs">${pm.name.slice(0,3)}</div>
-                <div><p class="text-xs text-slate-500">${pm.type}</p><p class="font-mono font-bold text-slate-800">${pm.number}</p></div>
-            </div>
-            <i data-lucide="copy" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500"></i>
-        </div>`).join('');
-        lucide.createIcons();
-    } catch(e) {}
+  const el = $('pm-list-el'); if (!el) return;
+  try {
+    const snap = await db.collection('paymentMethods').get();
+    const pms = snap.docs.map(d => d.data()).sort((a, b) => (a.order || 0) - (b.order || 0));
+    const PMCLR = { pink:'bg-pink-100 text-pink-600', orange:'bg-orange-100 text-orange-600', yellow:'bg-yellow-100 text-yellow-600', indigo:'bg-indigo-100 text-indigo-600' };
+    el.innerHTML = pms.map(pm => `
+      <div class="group bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 transition cursor-pointer flex justify-between items-center" onclick="copyTxt('${pm.number}')">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 ${PMCLR[pm.color] || PMCLR.indigo} rounded-lg flex items-center justify-center font-bold text-xs">${pm.name.slice(0, 3)}</div>
+          <div><p class="text-xs text-slate-500">${pm.type}</p><p class="font-mono font-bold text-slate-800">${pm.number}</p></div>
+        </div>
+        <i data-lucide="copy" class="w-5 h-5 text-slate-400 group-hover:text-indigo-500 transition"></i>
+      </div>`).join('');
+    lucide.createIcons();
+  } catch(e) {}
 }
 
 window.submitOrder = async () => {
-    if (!currentCourse) return;
-    const name=gv('pay-name'), email=gv('pay-email'), sender=gv('pay-sender'), txid=gv('pay-txid');
-    if (!name || !email || !sender || !txid) { toast('সব ঘর পূরণ করুন!','err'); return; }
-    try {
-        await addDoc(collection(db,'orders'), {
-            courseName: currentCourse.title, courseId: currentCourse.id, coursePrice: currentCourse.price,
-            name, email, senderNumber: sender, transactionId: txid,
-            status: 'pending', createdAt: new Date().toISOString()
-        });
-        document.getElementById('success-modal').classList.add('open');
-        document.getElementById('pay-name').value=''; document.getElementById('pay-email').value='';
-        document.getElementById('pay-sender').value=''; document.getElementById('pay-txid').value='';
-    } catch(e) { toast('সমস্যা হয়েছে!','err'); }
+  if (!curCourse) return;
+  const name = gv('pay-name-el'), email = gv('pay-email-el'), sender = gv('pay-sender-el'), txid = gv('pay-txid-el');
+  if (!name || !email || !sender || !txid) { showToast('সব ঘর পূরণ করুন!', 'err'); return; }
+  try {
+    await db.collection('orders').add({
+      courseName: curCourse.title, courseId: curCourse.id, coursePrice: curCourse.price,
+      name, email, senderNumber: sender, transactionId: txid,
+      status: 'pending', createdAt: new Date().toISOString()
+    });
+    $('success-modal').classList.add('open');
+    ['pay-name-el','pay-email-el','pay-sender-el','pay-txid-el'].forEach(x => sv(x, ''));
+  } catch(e) { showToast('সমস্যা হয়েছে! আবার চেষ্টা করুন।', 'err'); }
 };
 
-// ── TOOLS ──
-let allTools = [];
+window.closeSuccessModal = () => {
+  $('success-modal').classList.remove('open');
+  showPage('home');
+};
+
+// ══════════════════════════════════════════════════
+// TOOLS
+// ══════════════════════════════════════════════════
 async function loadTools() {
-    try {
-        const snap = await getDocs(query(collection(db,'tools'), orderBy('order')));
-        allTools = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        renderTools();
-    } catch(e) {}
+  const snap = await db.collection('tools').get();
+  allTools = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
+  renderTools();
 }
 
-function toolCardHTML(t) {
-    const ic = CLR[t.color]||CLR.indigo, bc = BDGCLR[t.badge]||'bg-slate-100 text-slate-700';
-    return `<div class="tool-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl ${ic} flex items-center justify-center flex-shrink-0"><i data-lucide="${t.icon||'tool'}" class="w-6 h-6"></i></div>
-            <span class="text-xs font-bold px-3 py-1 rounded-full ${bc}">${t.badge||'ফ্রি'}</span>
-        </div>
-        <h3 class="text-lg font-bold text-slate-800 mb-1">${t.name}</h3>
-        <p class="text-xs text-indigo-500 font-semibold mb-3">${t.category}</p>
-        <p class="text-slate-500 text-sm mb-5 leading-relaxed">${t.description}</p>
-        <a href="${t.link}" target="_blank" class="gradient-bg text-white text-sm font-bold px-5 py-2 rounded-lg hover:opacity-90 transition inline-flex items-center gap-2">ভিজিট করুন <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-    </div>`;
+function toolCard(t) {
+  const ic = CLR[t.color] || CLR.indigo, bc = BDGCLR[t.badge] || 'bg-slate-100 text-slate-700';
+  return `<div class="tool-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg">
+    <div class="flex items-start justify-between mb-4">
+      <div class="w-12 h-12 rounded-xl ${ic} flex items-center justify-center flex-shrink-0"><i data-lucide="${t.icon || 'tool'}" class="w-6 h-6"></i></div>
+      <span class="text-xs font-bold px-3 py-1 rounded-full ${bc}">${t.badge || 'ফ্রি'}</span>
+    </div>
+    <h3 class="text-lg font-bold text-slate-800 mb-1">${t.name}</h3>
+    <p class="text-xs text-indigo-500 font-semibold mb-3">${t.category}</p>
+    <p class="text-slate-500 text-sm mb-5 leading-relaxed">${t.description}</p>
+    <a href="${t.link}" target="_blank" class="gradient-bg text-white text-sm font-bold px-5 py-2 rounded-lg hover:opacity-90 transition inline-flex items-center gap-2">
+      ভিজিট করুন <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+    </a>
+  </div>`;
 }
 
-function renderTools(filtered) {
-    const src = filtered || allTools;
-    const el = document.getElementById('tools-grid'); if(!el) return;
-    el.innerHTML = src.length ? src.map(toolCardHTML).join('') : '<p class="col-span-3 text-center text-slate-400 py-12">কোনো টুল নেই</p>';
-    const cats = ['সব', ...new Set(allTools.map(t=>t.category))];
-    const tf = document.getElementById('tools-filter'); if(tf) tf.innerHTML = cats.map((c,i)=>`<button onclick="filterTool('${c}')" class="ftool px-4 py-2 rounded-full text-sm font-bold border transition ${i===0?'bg-indigo-600 text-white border-indigo-600':'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}" data-cat="${c}">${c}</button>`).join('');
-    lucide.createIcons();
+function renderTools(src) {
+  const list = src || allTools;
+  const el = $('tools-grid-el'); if (!el) return;
+  el.innerHTML = list.length ? list.map(toolCard).join('') : '<p class="col-span-3 text-center text-slate-400 py-12">কোনো টুল নেই</p>';
+  const cats = ['সব', ...new Set(allTools.map(t => t.category))];
+  const tf = $('tools-filter-el');
+  if (tf) tf.innerHTML = cats.map((c, i) => `<button onclick="filterTool('${c}')" class="ftool px-4 py-2 rounded-full text-sm font-bold border transition ${i === 0 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}" data-cat="${c}">${c}</button>`).join('');
+  lucide.createIcons();
 }
-window.filterTool = (cat) => {
-    document.querySelectorAll('.ftool').forEach(b => { const a=b.dataset.cat===cat; b.className=`ftool px-4 py-2 rounded-full text-sm font-bold border transition ${a?'bg-indigo-600 text-white border-indigo-600':'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}`; });
-    renderTools(cat==='সব' ? allTools : allTools.filter(t=>t.category===cat));
+
+window.filterTool = cat => {
+  document.querySelectorAll('.ftool').forEach(b => {
+    const a = b.dataset.cat === cat;
+    b.className = `ftool px-4 py-2 rounded-full text-sm font-bold border transition ${a ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400'}`;
+  });
+  renderTools(cat === 'সব' ? allTools : allTools.filter(t => t.category === cat));
 };
 
-// ── POSTS / FEED ──
+// ══════════════════════════════════════════════════
+// POSTS / UPDATES
+// ══════════════════════════════════════════════════
 async function loadPosts() {
-    try {
-        const snap = await getDocs(query(collection(db,'posts'), orderBy('createdAt','desc')));
-        const posts = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        const pinned = posts.filter(p=>p.isPinned);
-        const rest   = posts.filter(p=>!p.isPinned);
-        renderFeed([...pinned, ...rest]);
-    } catch(e) {}
+  const snap = await db.collection('posts').get();
+  const posts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+  });
+  renderFeed(posts);
 }
 
 function renderFeed(posts) {
-    const c = document.getElementById('feed-container');
-    const e = document.getElementById('feed-empty');
-    if (!c) return;
-    c.querySelectorAll('.tgpost').forEach(el => el.remove());
-    if (!posts.length) { if(e) e.style.display='block'; return; }
-    if(e) e.style.display='none';
-    posts.forEach(p => {
-        const tags = (p.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="tgtag">${t.trim()}</span>`).join('');
-        const d = new Date(p.createdAt||Date.now());
-        const dt = `${d.getDate()} ${['জানু','ফেব','মার্চ','এপ্রি','মে','জুন','জুলা','আগ','সেপ','অক্টো','নভে','ডিসে'][d.getMonth()]} ${d.getFullYear()}, ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-        const html = `<div class="tgpost">
-            ${p.isPinned?'<div class="px-4 pt-3"><span style="background:#fef3c7;color:#d97706;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:3px;"><i data-lucide="pin" class="w-3 h-3"></i> পিন করা</span></div>':''}
-            <div class="tghead"><div class="tgava">M</div><div><div style="font-weight:700;font-size:14px;color:#1e1b4b;">MethodMaster</div><div style="font-size:11px;color:#9ca3af;">${dt}</div></div></div>
-            ${p.imageUrl?`<img src="${p.imageUrl}" style="width:100%;max-height:320px;object-fit:cover;" onerror="this.style.display='none'">`:''}
-            <div class="tgbody">${p.body}</div>
-            ${p.linkUrl?`<a href="${p.linkUrl}" target="_blank" class="tglink"><div class="tgltitle">${p.linkTitle||p.linkUrl}</div><div style="font-size:11px;color:#7c3aed;margin-top:2px;">${p.linkUrl}</div></a>`:''}
-            ${tags?`<div class="px-4 pb-2">${tags}</div>`:''}
-            <div style="padding:0 15px 11px;display:flex;align-items:center;gap:14px;"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#9ca3af;font-weight:600;"><i data-lucide="eye" class="w-3.5 h-3.5"></i>${p.views||'০'}</span></div>
-        </div>`;
-        c.insertAdjacentHTML('beforeend', html);
-    });
-    lucide.createIcons();
+  const container = $('feed-container-el'), empty = $('feed-empty-el');
+  if (!container) return;
+  container.querySelectorAll('.tgpost').forEach(el => el.remove());
+  if (!posts.length) { if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  const MO = ['জানু','ফেব','মার্চ','এপ্রি','মে','জুন','জুলা','আগ','সেপ','অক্টো','নভে','ডিসে'];
+  posts.forEach(p => {
+    const tags = (p.tags || '').split(',').filter(t => t.trim()).map(t => `<span class="tgtag">${t.trim()}</span>`).join('');
+    const d = new Date(p.createdAt || Date.now());
+    const dt = `${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}, ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    container.insertAdjacentHTML('beforeend', `
+      <div class="tgpost">
+        ${p.isPinned ? '<div class="px-4 pt-3"><span style="background:#fef3c7;color:#d97706;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:3px;"><i data-lucide="pin" class="w-3 h-3"></i> পিন করা</span></div>' : ''}
+        <div class="tghead">
+          <div class="tgava">M</div>
+          <div><div style="font-weight:700;font-size:14px;color:#1e1b4b;">Voice Developer</div><div style="font-size:11px;color:#9ca3af;">${dt}</div></div>
+        </div>
+        ${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%;max-height:320px;object-fit:cover;" onerror="this.style.display='none'">` : ''}
+        <div class="tgbody">${p.body}</div>
+        ${p.linkUrl ? `<a href="${p.linkUrl}" target="_blank" class="tglink"><div style="font-weight:700;color:#4f46e5;font-size:13px;">${p.linkTitle || p.linkUrl}</div><div style="font-size:11px;color:#7c3aed;margin-top:2px;">${p.linkUrl}</div></a>` : ''}
+        ${tags ? `<div class="px-4 pb-2">${tags}</div>` : ''}
+        <div style="padding:0 15px 11px;display:flex;gap:14px;">
+          <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#9ca3af;font-weight:600;"><i data-lucide="eye" class="w-3.5 h-3.5"></i>${p.views || '০'}</span>
+        </div>
+      </div>`);
+  });
+  lucide.createIcons();
 }
 
-// ── REVIEWS ──
+// ══════════════════════════════════════════════════
+// REVIEWS
+// ══════════════════════════════════════════════════
 async function loadReviews() {
-    try {
-        const snap = await getDocs(collection(db,'reviews'));
-        const reviews = snap.docs.map(d => d.data());
-        const el = document.getElementById('reviews-grid'); if(!el) return;
-        el.innerHTML = reviews.map(r => `<div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-            <div class="text-yellow-400 text-lg mb-3">${'★'.repeat(r.rating||5)}</div>
-            <p class="text-slate-700 mb-4 text-sm leading-relaxed">"${r.text}"</p>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white font-bold text-sm">${r.name.charAt(0)}</div>
-                <div><p class="font-bold text-slate-800 text-sm">${r.name}</p><p class="text-slate-500 text-xs">${r.role}</p></div>
-            </div>
-        </div>`).join('');
-    } catch(e) {}
+  const snap = await db.collection('reviews').get();
+  const el = $('reviews-grid-el'); if (!el) return;
+  el.innerHTML = snap.docs.map(d => {
+    const r = d.data();
+    return `<div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+      <div class="flex gap-0.5 mb-3 text-yellow-400 text-lg">${'★'.repeat(r.rating || 5)}</div>
+      <p class="text-slate-700 mb-4 text-sm leading-relaxed">"${r.text}"</p>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white font-bold text-sm">${r.name.charAt(0)}</div>
+        <div><p class="font-bold text-slate-800 text-sm">${r.name}</p><p class="text-slate-500 text-xs">${r.role}</p></div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-// ── CONDITIONS ──
+// ══════════════════════════════════════════════════
+// CONDITIONS
+// ══════════════════════════════════════════════════
 async function loadConditions() {
-    try {
-        const snap = await getDocs(query(collection(db,'conditions'), orderBy('order')));
-        const conds = snap.docs.map(d => d.data());
-        const el = document.getElementById('conditions-content'); if(!el) return;
-        el.innerHTML = conds.map((c,i) => `<div${i>0?' class="border-t border-slate-100 pt-6"':''}>
-            <h3 class="flex items-center text-xl font-bold text-slate-800 mb-3"><i data-lucide="${c.icon}" class="w-6 h-6 ${c.color} mr-3"></i>${c.title}</h3>
-            <p class="text-slate-600 leading-relaxed pl-9">${c.text}</p>
-        </div>`).join('');
-        lucide.createIcons();
-    } catch(e) {}
+  const snap = await db.collection('conditions').get();
+  const conds = snap.docs.map(d => d.data()).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const el = $('conditions-content-el'); if (!el) return;
+  el.innerHTML = conds.map((c, i) => `
+    <div${i > 0 ? ' class="border-t border-slate-100 pt-6"' : ''}>
+      <h3 class="flex items-center text-xl font-bold text-slate-800 mb-3">
+        <i data-lucide="${c.icon}" class="w-6 h-6 ${c.color} mr-3"></i>${c.title}
+      </h3>
+      <p class="text-slate-600 leading-relaxed pl-9">${c.text}</p>
+    </div>`).join('');
+  lucide.createIcons();
 }
 
-// ── CONTACTS ──
+// ══════════════════════════════════════════════════
+// CONTACTS
+// ══════════════════════════════════════════════════
 async function loadContacts() {
-    try {
-        const snap = await getDocs(collection(db,'contacts'));
-        const contacts = snap.docs.map(d => d.data());
-        const el = document.getElementById('contact-content'); if(!el) return;
-        el.innerHTML = contacts.map(c => {
-            const href = c.type==='email'?`mailto:${c.value}`:c.value;
-            return `<div class="bg-white rounded-2xl shadow p-6 border border-gray-100 flex items-center gap-5">
-                <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0"><i data-lucide="${c.icon}" class="w-7 h-7"></i></div>
-                <div><h3 class="font-bold text-slate-800 mb-0.5">${c.label}</h3><p class="text-slate-500 text-sm mb-2">${c.value}</p>
-                <a href="${href}" target="_blank" class="inline-block border border-slate-300 text-slate-700 px-4 py-1.5 rounded-full text-xs font-semibold hover:bg-slate-50 transition">যোগাযোগ করুন</a></div>
-            </div>`;
-        }).join('');
-        lucide.createIcons();
-    } catch(e) {}
+  const snap = await db.collection('contacts').get();
+  const el = $('contact-content-el'); if (!el) return;
+  el.innerHTML = snap.docs.map(d => {
+    const c = d.data();
+    const href = c.type === 'email' ? `mailto:${c.value}` : c.value;
+    return `<div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full mb-4">
+        <i data-lucide="${c.icon}" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-2">${c.label}</h3>
+      <p class="text-slate-600 mb-6">${c.value}</p>
+      <a href="${href}" target="_blank" class="inline-block border border-slate-300 text-slate-700 px-6 py-2 rounded-full font-medium hover:bg-slate-50 transition">যোগাযোগ করুন</a>
+    </div>`;
+  }).join('');
+  lucide.createIcons();
 }
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // NAVIGATION
-// ══════════════════════════════════════════
-function setupNavListeners() {
-    document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => {
-        const p = l.dataset.page; if(p) { e.preventDefault(); showPage(p); }
-    }));
-    document.getElementById('menu-btn').addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('hidden'));
+// ══════════════════════════════════════════════════
+function setupNav() {
+  document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', e => {
+    const p = l.dataset.page; if (p) { e.preventDefault(); showPage(p); }
+  }));
+  $('menu-btn').addEventListener('click', () => $('mobile-menu').classList.toggle('hidden'));
 }
 
-window.showPage = (pid) => {
-    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-    const t = document.getElementById(`page-${pid}`); if(t) { t.classList.add('active'); window.scrollTo(0,0); }
-    document.querySelectorAll('.nav-menu-link').forEach(l => { l.classList.remove('active-link'); if(l.dataset.page===pid) l.classList.add('active-link'); });
-    document.getElementById('mobile-menu').classList.add('hidden');
-    // Reload realtime data on page visit
-    if (pid==='updates') loadPosts();
+window.showPage = pid => {
+  document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+  const t = $(`page-${pid}`); if (t) { t.classList.add('active'); window.scrollTo(0, 0); }
+  document.querySelectorAll('.nav-menu-link').forEach(l => {
+    l.classList.remove('active-link');
+    if (l.dataset.page === pid) l.classList.add('active-link');
+  });
+  $('mobile-menu').classList.add('hidden');
+  if (pid === 'updates') loadPosts();
 };
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════════
 // CHART
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════════
 function initChart() {
-    const ctx = document.getElementById('incomeChart'); if(!ctx) return;
-    new Chart(ctx, { type:'line', data:{ labels:['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন'], datasets:[{ data:[15000,25000,40000,35000,60000,120000], backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(79,70,229,.4)');g.addColorStop(1,'rgba(79,70,229,0)');return g;}, borderColor:'#4f46e5', borderWidth:3, pointBackgroundColor:'#fff', pointBorderColor:'#4f46e5', pointBorderWidth:2, pointRadius:4, fill:true, tension:.4 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}},y:{display:false}} } });
+  const ctx = $('incomeChart'); if (!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন'],
+      datasets: [{
+        data: [15000,25000,40000,35000,60000,120000],
+        backgroundColor: c => {
+          const g = c.chart.ctx.createLinearGradient(0, 0, 0, 200);
+          g.addColorStop(0, 'rgba(79,70,229,.4)');
+          g.addColorStop(1, 'rgba(79,70,229,0)');
+          return g;
+        },
+        borderColor: '#4f46e5', borderWidth: 3,
+        pointBackgroundColor: '#fff', pointBorderColor: '#4f46e5',
+        pointBorderWidth: 2, pointRadius: 4, fill: true, tension: .4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { grid: { display: false } }, y: { display: false } }
+    }
+  });
 }
 
-// ══════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════
-window.openAdmin = () => {
-    if (isAdmin) { document.getElementById('admin-overlay').classList.add('open'); loadAdminData(); lucide.createIcons(); }
-    else { document.getElementById('admin-login').classList.add('open'); }
+// ══════════════════════════════════════════════════
+// COPY
+// ══════════════════════════════════════════════════
+window.copyTxt = t => {
+  navigator.clipboard.writeText(t).then(() => showToast('কপি হয়েছে: ' + t)).catch(() => showToast('কপি করুন: ' + t));
 };
-window.closeAdmin = () => document.getElementById('admin-overlay').classList.remove('open');
+
+// ══════════════════════════════════════════════════
+// ADMIN — Hidden (Ctrl+Shift+A to open)
+// ══════════════════════════════════════════════════
+window.openAdmin = () => {
+  if (isAdmin) {
+    $('admin-overlay').classList.add('open');
+    renderDash();
+    lucide.createIcons();
+  } else {
+    $('admin-login-modal').classList.add('open');
+  }
+};
 
 window.doLogin = async () => {
-    const email=document.getElementById('login-email').value, pw=document.getElementById('login-pw').value;
-    try {
-        await signInWithEmailAndPassword(auth, email, pw);
-        isAdmin = true;
-        document.getElementById('admin-login').classList.remove('open');
-        document.getElementById('admin-overlay').classList.add('open');
-        loadAdminData(); lucide.createIcons();
-        toast('অ্যাডমিন প্যানেলে স্বাগতম!');
-    } catch(e) { document.getElementById('login-err').textContent = 'ইমেইল বা পাসওয়ার্ড ভুল!'; }
+  const email = gv('admin-email-in'), pw = gv('admin-pw-in');
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+    isAdmin = true;
+    $('admin-login-modal').classList.remove('open');
+    $('login-err-el').textContent = '';
+    $('admin-overlay').classList.add('open');
+    renderDash();
+    lucide.createIcons();
+    showToast('স্বাগতম অ্যাডমিন প্যানেলে!');
+  } catch(e) {
+    $('login-err-el').textContent = 'ইমেইল বা পাসওয়ার্ড ভুল!';
+  }
 };
 
 window.doLogout = async () => {
-    await signOut(auth);
-    isAdmin = false;
-    document.getElementById('admin-overlay').classList.remove('open');
-    toast('লগআউট হয়েছে।');
+  await auth.signOut();
+  isAdmin = false;
+  $('admin-overlay').classList.remove('open');
+  showToast('লগআউট হয়েছে।');
 };
 
-window.sw = (id) => {
-    document.querySelectorAll('.asec').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.anav').forEach(n => n.classList.remove('active'));
-    const sec = document.getElementById(`as-${id}`); if(sec) sec.classList.add('active');
-    const nav = document.querySelector(`[onclick="sw('${id}')"]`); if(nav) nav.classList.add('active');
-    // Section-specific load
-    if(id==='courses') renderAdminCourses();
-    if(id==='tools') renderAdminTools();
-    if(id==='orders') loadOrders('all');
-    if(id==='reviews') renderAdminReviews();
-    if(id==='pm-settings') renderAdminPMs();
-    if(id==='cond-mgr') renderAdminConds();
-    if(id==='contact-mgr') renderAdminContacts();
-    if(id==='posts') { renderAdminPosts(); const ch=document.getElementById('as-posts'); if(ch){getDoc(doc(db,'settings','channel')).then(s=>{if(s.exists()){sv('ch-desc-in',s.data().desc);sv('ch-mem-in',s.data().members);}});} }
-    if(id==='hero') { sv('h-badge',HERO.badge);sv('h-t1',HERO.t1);sv('h-t2',HERO.t2);sv('h-desc',HERO.desc);sv('h-cl',HERO.chartLabel);sv('h-ca',HERO.chartAmount);sv('h-cg',HERO.chartGrowth);sv('h-rt',HERO.rating); }
-    if(id==='site-settings') loadSiteForm();
-    if(id==='dash') renderDash();
+// Keyboard shortcut: Ctrl+Shift+A
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    e.preventDefault();
+    openAdmin();
+  }
+});
+
+// Admin panel section switcher
+window.sw = id => {
+  document.querySelectorAll('.asec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.anav').forEach(n => n.classList.remove('active'));
+  const sec = $(`as-${id}`); if (sec) sec.classList.add('active');
+  const nav = document.querySelector(`[onclick="sw('${id}')"]`); if (nav) nav.classList.add('active');
+  if (id === 'courses') renderAdminCourses();
+  if (id === 'tools') renderAdminTools();
+  if (id === 'orders') loadOrders('all');
+  if (id === 'reviews') renderAdminReviews();
+  if (id === 'pm-settings') renderAdminPMs();
+  if (id === 'cond-mgr') renderAdminConds();
+  if (id === 'contact-mgr') renderAdminContacts();
+  if (id === 'posts') { renderAdminPosts(); loadChannelForm(); }
+  if (id === 'hero') loadHeroForm();
+  if (id === 'site-settings') loadSiteForm();
+  if (id === 'channel-settings') loadChannelForm();
+  if (id === 'dash') renderDash();
 };
 
-async function loadAdminData() { await loadSettings(); renderDash(); }
-
+// ── DASHBOARD ──
 async function renderDash() {
-    try {
-        const [cs,ts,ps,os] = await Promise.all([getDocs(collection(db,'courses')),getDocs(collection(db,'tools')),getDocs(collection(db,'posts')),getDocs(collection(db,'orders'))]);
-        const orders = os.docs.map(d=>({id:d.id,...d.data()}));
-        const pending = orders.filter(o=>o.status==='pending').length;
-        const el = document.getElementById('dash-stats');
-        if(el) { el.innerHTML = [{icon:'book-open',val:cs.size,lbl:'কোর্স',bg:'bg-indigo-100',tc:'text-indigo-600'},{icon:'wrench',val:ts.size,lbl:'টুলস',bg:'bg-violet-100',tc:'text-violet-600'},{icon:'send',val:ps.size,lbl:'পোস্ট',bg:'bg-blue-100',tc:'text-blue-600'},{icon:'clock',val:pending,lbl:'পেন্ডিং অর্ডার',bg:'bg-amber-100',tc:'text-amber-600'}].map(s=>`<div class="acard flex items-center gap-3"><div class="w-10 h-10 ${s.bg} ${s.tc} rounded-xl flex items-center justify-center"><i data-lucide="${s.icon}" class="w-5 h-5"></i></div><div><p class="text-2xl font-black text-white">${s.val}</p><p class="text-xs text-indigo-400">${s.lbl}</p></div></div>`).join(''); lucide.createIcons(); }
-        const oel = document.getElementById('dash-orders');
-        if(oel) oel.innerHTML = orders.slice(0,5).map(o=>`<div class="flex justify-between items-center py-2 border-b border-indigo-900/40 last:border-0"><div><p class="text-white text-sm font-semibold">${o.name}</p><p class="text-indigo-400 text-xs">${o.courseName||'—'}</p></div><span class="atag ${o.status==='verified'?'bg-green-900/50 text-green-400':''}">${o.status==='verified'?'✓ ভেরিফাইড':'⏳ পেন্ডিং'}</span></div>`).join('');
-    } catch(e) {}
+  try {
+    const [cs, ts, ps, os] = await Promise.all([
+      db.collection('courses').get(), db.collection('tools').get(),
+      db.collection('posts').get(), db.collection('orders').get()
+    ]);
+    const orders = os.docs.map(d => ({ id: d.id, ...d.data() }));
+    const pending = orders.filter(o => o.status === 'pending').length;
+    const el = $('dash-stats-el');
+    if (el) {
+      el.innerHTML = [
+        {icon:'book-open', val:cs.size, lbl:'কোর্স', bg:'bg-indigo-100', tc:'text-indigo-600'},
+        {icon:'wrench', val:ts.size, lbl:'টুলস', bg:'bg-violet-100', tc:'text-violet-600'},
+        {icon:'send', val:ps.size, lbl:'পোস্ট', bg:'bg-blue-100', tc:'text-blue-600'},
+        {icon:'clock', val:pending, lbl:'পেন্ডিং অর্ডার', bg:'bg-amber-100', tc:'text-amber-600'}
+      ].map(s => `<div class="acard flex items-center gap-3"><div class="w-10 h-10 ${s.bg} ${s.tc} rounded-xl flex items-center justify-center"><i data-lucide="${s.icon}" class="w-5 h-5"></i></div><div><p class="text-2xl font-black text-white">${s.val}</p><p class="text-xs text-indigo-400">${s.lbl}</p></div></div>`).join('');
+      lucide.createIcons();
+    }
+    const oel = $('dash-orders-el');
+    if (oel) oel.innerHTML = orders.slice(0, 6).map(o => `
+      <div class="flex justify-between items-center py-2 border-b border-indigo-900/40 last:border-0">
+        <div><p class="text-white text-sm font-semibold">${o.name}</p><p class="text-indigo-400 text-xs">${o.courseName || '—'} | ${o.senderNumber || '—'}</p></div>
+        <span class="atag ${o.status === 'verified' ? 'bg-green-900/50 text-green-400' : ''}">${o.status === 'verified' ? '✓ ভেরিফাইড' : '⏳ পেন্ডিং'}</span>
+      </div>`).join('') || '<p class="text-indigo-400 text-sm text-center py-3">কোনো অর্ডার নেই</p>';
+  } catch(e) { console.error(e); }
 }
 
-// ── COURSE ADMIN ──
-function renderAdminCourses() {
-    const el = document.getElementById('admin-course-list'); if(!el) return;
-    el.innerHTML = allCourses.map(c => `<div class="acard flex justify-between items-center gap-3"><div><p class="text-white font-bold text-sm">${c.title}</p><div class="flex gap-2 mt-1"><span class="atag">${c.category}</span><span class="atag">৳${c.price}</span></div></div><div class="flex gap-2 shrink-0"><button onclick="editCourse('${c.id}')" class="ab abg text-xs py-1.5 px-3">এডিট</button><button onclick="delCourse('${c.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button></div></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো কোর্স নেই</p>';
+// ── HERO FORM ──
+function loadHeroForm() {
+  sv('h-badge-in', HERO.badge); sv('h-t1-in', HERO.t1); sv('h-t2-in', HERO.t2);
+  sv('h-desc-in', HERO.desc); sv('h-cl-in', HERO.chartLabel); sv('h-ca-in', HERO.chartAmount);
+  sv('h-cg-in', HERO.chartGrowth); sv('h-rt-in', HERO.rating);
 }
-window.editCourse = (id) => {
-    const c = allCourses.find(x=>x.id===id);
-    document.getElementById('course-form-h').textContent='কোর্স এডিট করুন';
-    sv('c-eid',c.id); sv('c-title',c.title); sv('c-cat',c.category); sv('c-desc',c.description); sv('c-price',c.price); sv('c-oprice',c.originalPrice); sv('c-students',c.students); sv('c-rating',c.rating); sv('c-img',c.image||''); sv('c-features',(c.features||[]).join('\n')); sv('c-topics',(c.topics||[]).join('\n'));
-    sw('add-course');
+window.saveHero = async () => {
+  const h = { badge:gv('h-badge-in'), t1:gv('h-t1-in'), t2:gv('h-t2-in'), desc:gv('h-desc-in'), chartLabel:gv('h-cl-in'), chartAmount:gv('h-ca-in'), chartGrowth:gv('h-cg-in'), rating:gv('h-rt-in') };
+  await db.collection('settings').doc('hero').set(h);
+  HERO = h; applyHero(); showToast('হোম পেজ আপডেট হয়েছে!');
 };
-window.delCourse = async (id) => {
-    if(!confirm('এই কোর্সটি ডিলিট করবেন?')) return;
-    await deleteDoc(doc(db,'courses',id)); await loadCourses(); renderAdminCourses(); renderDash(); toast('কোর্স মুছে ফেলা হয়েছে!');
+
+// ── COURSES ADMIN ──
+function renderAdminCourses() {
+  const el = $('admin-courses-list-el'); if (!el) return;
+  el.innerHTML = allCourses.map(c => `
+    <div class="acard flex justify-between items-center gap-3">
+      <div><p class="text-white font-bold text-sm">${c.title}</p>
+        <div class="flex gap-2 mt-1"><span class="atag">${c.category}</span><span class="atag">৳${c.price}</span></div></div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="editCourse('${c.id}')" class="ab abg text-xs py-1.5 px-3">এডিট</button>
+        <button onclick="delCourse('${c.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button>
+      </div>
+    </div>`).join('') || '<p class="text-indigo-400 text-sm">কোনো কোর্স নেই</p>';
+}
+window.editCourse = id => {
+  const c = allCourses.find(x => x.id === id);
+  $('course-form-title').textContent = 'কোর্স এডিট করুন';
+  sv('c-edit-id', c.id); sv('c-title-in', c.title); sv('c-cat-in', c.category);
+  sv('c-desc-in', c.description); sv('c-price-in', c.price); sv('c-oprice-in', c.originalPrice);
+  sv('c-students-in', c.students); sv('c-rating-in', c.rating); sv('c-img-in', c.image || '');
+  sv('c-features-in', (c.features || []).join('\n')); sv('c-topics-in', (c.topics || []).join('\n'));
+  sw('add-course');
+};
+window.delCourse = async id => {
+  if (!confirm('এই কোর্সটি ডিলিট করবেন?')) return;
+  await db.collection('courses').doc(id).delete();
+  await loadCourses(); renderAdminCourses(); renderDash(); showToast('কোর্স ডিলিট হয়েছে!');
 };
 window.saveCourse = async () => {
-    const id = gv('c-eid');
-    const data = { title:gv('c-title'), category:gv('c-cat'), description:gv('c-desc'), price:gv('c-price'), originalPrice:gv('c-oprice'), students:gv('c-students'), rating:gv('c-rating'), image:gv('c-img'), features:gv('c-features').split('\n').filter(s=>s.trim()), topics:gv('c-topics').split('\n').filter(s=>s.trim()), order: allCourses.length+1 };
-    if (id) { await updateDoc(doc(db,'courses',id), data); toast('কোর্স আপডেট হয়েছে!'); }
-    else { await addDoc(collection(db,'courses'), data); toast('নতুন কোর্স যোগ হয়েছে!'); }
-    await loadCourses(); clearCourseForm(); renderDash();
+  const id = gv('c-edit-id');
+  const data = {
+    title: gv('c-title-in'), category: gv('c-cat-in'), description: gv('c-desc-in'),
+    price: gv('c-price-in'), originalPrice: gv('c-oprice-in'), students: gv('c-students-in'),
+    rating: gv('c-rating-in'), image: gv('c-img-in'),
+    features: gv('c-features-in').split('\n').filter(s => s.trim()),
+    topics: gv('c-topics-in').split('\n').filter(s => s.trim()),
+    order: Date.now()
+  };
+  if (id) await db.collection('courses').doc(id).update(data);
+  else await db.collection('courses').add(data);
+  await loadCourses(); clearCF(); renderDash(); showToast(id ? 'কোর্স আপডেট হয়েছে!' : 'নতুন কোর্স যোগ হয়েছে!');
 };
-window.clearCourseForm = () => { ['c-eid','c-title','c-cat','c-desc','c-price','c-oprice','c-students','c-rating','c-img','c-features','c-topics'].forEach(x=>sv(x,'')); document.getElementById('course-form-h').textContent='নতুন কোর্স যোগ করুন'; };
+window.clearCF = () => {
+  ['c-edit-id','c-title-in','c-cat-in','c-desc-in','c-price-in','c-oprice-in','c-students-in','c-rating-in','c-img-in','c-features-in','c-topics-in'].forEach(x => sv(x, ''));
+  $('course-form-title').textContent = 'নতুন কোর্স যোগ করুন';
+};
 
-// ── TOOL ADMIN ──
+// ── TOOLS ADMIN ──
 function renderAdminTools() {
-    const el = document.getElementById('admin-tool-list'); if(!el) return;
-    el.innerHTML = allTools.map(t => `<div class="acard flex justify-between items-center gap-3"><div><p class="text-white font-bold text-sm">${t.name}</p><div class="flex gap-2 mt-1"><span class="atag">${t.category}</span><span class="atag">${t.badge||'ফ্রি'}</span></div></div><div class="flex gap-2 shrink-0"><button onclick="editTool('${t.id}')" class="ab abg text-xs py-1.5 px-3">এডিট</button><button onclick="delTool('${t.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button></div></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো টুল নেই</p>';
+  const el = $('admin-tools-list-el'); if (!el) return;
+  el.innerHTML = allTools.map(t => `
+    <div class="acard flex justify-between items-center gap-3">
+      <div><p class="text-white font-bold text-sm">${t.name}</p>
+        <div class="flex gap-2 mt-1"><span class="atag">${t.category}</span><span class="atag">${t.badge || 'ফ্রি'}</span></div></div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="editTool('${t.id}')" class="ab abg text-xs py-1.5 px-3">এডিট</button>
+        <button onclick="delTool('${t.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button>
+      </div>
+    </div>`).join('') || '<p class="text-indigo-400 text-sm">কোনো টুল নেই</p>';
 }
-window.editTool = (id) => {
-    const t = allTools.find(x=>x.id===id);
-    document.getElementById('tool-form-h').textContent='টুল এডিট করুন';
-    sv('t-eid',t.id); sv('t-name',t.name); sv('t-cat',t.category); sv('t-desc',t.description); sv('t-link',t.link); sv('t-icon',t.icon||'tool'); document.getElementById('t-badge').value=t.badge||'ফ্রি'; document.getElementById('t-color').value=t.color||'indigo';
-    sw('add-tool');
+window.editTool = id => {
+  const t = allTools.find(x => x.id === id);
+  $('tool-form-title').textContent = 'টুল এডিট করুন';
+  sv('t-edit-id', t.id); sv('t-name-in', t.name); sv('t-cat-in', t.category);
+  sv('t-desc-in', t.description); sv('t-link-in', t.link); sv('t-icon-in', t.icon || 'tool');
+  $('t-badge-in').value = t.badge || 'ফ্রি'; $('t-color-in').value = t.color || 'indigo';
+  sw('add-tool');
 };
-window.delTool = async (id) => {
-    if(!confirm('মুছবেন?')) return;
-    await deleteDoc(doc(db,'tools',id)); await loadTools(); renderAdminTools(); toast('মুছে ফেলা হয়েছে!');
+window.delTool = async id => {
+  if (!confirm('মুছবেন?')) return;
+  await db.collection('tools').doc(id).delete();
+  await loadTools(); renderAdminTools(); showToast('মুছে ফেলা হয়েছে!');
 };
 window.saveTool = async () => {
-    const id = gv('t-eid');
-    const data = { name:gv('t-name'), category:gv('t-cat'), description:gv('t-desc'), link:gv('t-link'), icon:gv('t-icon')||'tool', badge:document.getElementById('t-badge').value, color:document.getElementById('t-color').value, order:allTools.length+1 };
-    if(id) { await updateDoc(doc(db,'tools',id),data); toast('টুল আপডেট হয়েছে!'); }
-    else { await addDoc(collection(db,'tools'),data); toast('টুল যোগ হয়েছে!'); }
-    await loadTools(); clearToolForm(); renderAdminTools();
+  const id = gv('t-edit-id');
+  const data = {
+    name: gv('t-name-in'), category: gv('t-cat-in'), description: gv('t-desc-in'),
+    link: gv('t-link-in'), icon: gv('t-icon-in') || 'tool',
+    badge: $('t-badge-in').value, color: $('t-color-in').value, order: Date.now()
+  };
+  if (id) await db.collection('tools').doc(id).update(data);
+  else await db.collection('tools').add(data);
+  await loadTools(); clearTF(); renderAdminTools(); showToast(id ? 'টুল আপডেট হয়েছে!' : 'টুল যোগ হয়েছে!');
 };
-window.clearToolForm = () => { ['t-eid','t-name','t-cat','t-desc','t-link','t-icon'].forEach(x=>sv(x,'')); document.getElementById('tool-form-h').textContent='নতুন টুল যোগ করুন'; };
+window.clearTF = () => {
+  ['t-edit-id','t-name-in','t-cat-in','t-desc-in','t-link-in','t-icon-in'].forEach(x => sv(x, ''));
+  $('tool-form-title').textContent = 'নতুন টুল যোগ করুন';
+};
 
 // ── POSTS ADMIN ──
-async function renderAdminPosts() {
-    const el = document.getElementById('posts-admin-list'); if(!el) return;
-    try {
-        const snap = await getDocs(query(collection(db,'posts'), orderBy('createdAt','desc')));
-        const posts = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        el.innerHTML = posts.map(p => `<div class="acard flex justify-between items-start gap-3"><div class="flex-1">${p.isPinned?'<span class="atag mb-1 inline-block">📌 পিন</span>':''}<p class="text-white text-sm line-clamp-2">${p.body}</p></div><button onclick="delPost('${p.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো পোস্ট নেই</p>';
-    } catch(e) {}
-}
-window.togglePF = () => { const t=document.getElementById('post-type').value; document.getElementById('pf-link').classList.toggle('hidden',t!=='link'); document.getElementById('pf-img').classList.toggle('hidden',t!=='image'); };
+window.togglePF = () => {
+  const t = $('post-type-in').value;
+  $('pf-link-wrap').classList.toggle('hidden', t !== 'link');
+  $('pf-img-wrap').classList.toggle('hidden', t !== 'image');
+};
 window.publishPost = async () => {
-    const body=gv('post-body'); if(!body){toast('পোস্ট লিখুন!','err');return;}
-    const t=document.getElementById('post-type').value;
-    await addDoc(collection(db,'posts'), { body, type:t, linkTitle:t==='link'?gv('post-ltitle'):'', linkUrl:t==='link'?gv('post-lurl'):'', imageUrl:t==='image'?gv('post-iurl'):'', tags:gv('post-tags'), views:gv('post-views')||'০', isPinned:document.getElementById('post-pin').checked, createdAt:new Date().toISOString() });
-    toast('পোস্ট পাবলিশ হয়েছে! 🎉');
-    ['post-body','post-tags','post-views','post-ltitle','post-lurl','post-iurl'].forEach(x=>sv(x,'')); document.getElementById('post-pin').checked=false;
-    await loadPosts(); renderAdminPosts();
+  const body = gv('post-body-in');
+  if (!body) { showToast('পোস্ট লিখুন!', 'err'); return; }
+  const t = $('post-type-in').value;
+  await db.collection('posts').add({
+    body, type: t,
+    linkTitle: t === 'link' ? gv('post-ltitle-in') : '',
+    linkUrl: t === 'link' ? gv('post-lurl-in') : '',
+    imageUrl: t === 'image' ? gv('post-iurl-in') : '',
+    tags: gv('post-tags-in'), views: gv('post-views-in') || '০',
+    isPinned: $('post-pin-in').checked,
+    createdAt: new Date().toISOString()
+  });
+  showToast('পোস্ট পাবলিশ হয়েছে! 🎉');
+  ['post-body-in','post-tags-in','post-views-in','post-ltitle-in','post-lurl-in','post-iurl-in'].forEach(x => sv(x, ''));
+  $('post-pin-in').checked = false;
+  $('post-type-in').value = 'text';
+  $('pf-link-wrap').classList.add('hidden'); $('pf-img-wrap').classList.add('hidden');
+  await loadPosts(); renderAdminPosts();
 };
-window.delPost = async (id) => { await deleteDoc(doc(db,'posts',id)); await loadPosts(); renderAdminPosts(); toast('মুছে ফেলা হয়েছে!'); };
-window.saveChannel = async () => { await setDoc(doc(db,'settings','channel'),{desc:gv('ch-desc-in'),members:gv('ch-mem-in')}); await loadSettings(); toast('চ্যানেল সেটিংস সেভ হয়েছে!'); };
+async function renderAdminPosts() {
+  const el = $('admin-posts-list-el'); if (!el) return;
+  const snap = await db.collection('posts').get();
+  const posts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  el.innerHTML = posts.map(p => `
+    <div class="acard flex justify-between items-start gap-3">
+      <div class="flex-1">
+        ${p.isPinned ? '<span class="atag mb-1 inline-block">📌 পিন</span>' : ''}
+        <p class="text-white text-sm line-clamp-2">${p.body}</p>
+      </div>
+      <button onclick="delPost('${p.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button>
+    </div>`).join('') || '<p class="text-indigo-400 text-sm">কোনো পোস্ট নেই</p>';
+}
+window.delPost = async id => {
+  await db.collection('posts').doc(id).delete();
+  await loadPosts(); renderAdminPosts(); showToast('পোস্ট মুছে ফেলা হয়েছে!');
+};
 
-// ── ORDERS ADMIN ──
-window.loadOrders = async (filter) => {
-    document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active-filter'));
-    const el = document.getElementById('orders-list'); if(!el) return;
-    try {
-        const snap = await getDocs(query(collection(db,'orders'), orderBy('createdAt','desc')));
-        let orders = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        if (filter !== 'all') orders = orders.filter(o => o.status===filter);
-        el.innerHTML = orders.map(o => `<div class="acard">
-            <div class="flex justify-between items-start mb-2">
-                <div><p class="text-white font-bold text-sm">${o.name}</p><p class="text-indigo-400 text-xs">${o.email}</p></div>
-                <span class="atag ${o.status==='verified'?'bg-green-900/40 text-green-400':''}">${o.status==='verified'?'✓ ভেরিফাইড':'⏳ পেন্ডিং'}</span>
-            </div>
-            <p class="text-indigo-300 text-xs mb-2">কোর্স: ${o.courseName||'—'} | ৳${o.coursePrice||'—'}</p>
-            <p class="text-indigo-400 text-xs">সেন্ডার: ${o.senderNumber||'—'} | TrxID: ${o.transactionId||'—'}</p>
-            ${o.status==='pending'?`<div class="flex gap-2 mt-3"><button onclick="verifyOrder('${o.id}')" class="ab abp text-xs py-1 px-3">✓ ভেরিফাই</button><button onclick="rejectOrder('${o.id}')" class="ab abd text-xs py-1 px-3">✗ রিজেক্ট</button></div>`:''}
-        </div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো অর্ডার নেই</p>';
-    } catch(e) {}
+// ── ORDERS ──
+window.loadOrders = async filter => {
+  const el = $('orders-list-el'); if (!el) return;
+  const snap = await db.collection('orders').get();
+  let orders = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  if (filter !== 'all') orders = orders.filter(o => o.status === filter);
+  el.innerHTML = orders.map(o => `
+    <div class="acard">
+      <div class="flex justify-between items-start mb-2">
+        <div><p class="text-white font-bold text-sm">${o.name}</p><p class="text-indigo-400 text-xs">${o.email}</p></div>
+        <span class="atag ${o.status === 'verified' ? 'bg-green-900/50 text-green-400' : o.status === 'rejected' ? 'bg-red-900/50 text-red-400' : ''}">${o.status === 'verified' ? '✓ ভেরিফাইড' : o.status === 'rejected' ? '✗ রিজেক্টেড' : '⏳ পেন্ডিং'}</span>
+      </div>
+      <p class="text-indigo-300 text-xs mb-1">কোর্স: ${o.courseName || '—'} | ৳${o.coursePrice || '—'}</p>
+      <p class="text-indigo-400 text-xs mb-2">সেন্ডার: ${o.senderNumber || '—'} | TrxID: <strong class="text-indigo-200">${o.transactionId || '—'}</strong></p>
+      ${o.status === 'pending' ? `
+        <div class="flex gap-2 mt-2">
+          <button onclick="verifyOrder('${o.id}')" class="ab abp text-xs py-1 px-3">✓ ভেরিফাই করুন</button>
+          <button onclick="rejectOrder('${o.id}')" class="ab abd text-xs py-1 px-3">✗ রিজেক্ট করুন</button>
+        </div>` : ''}
+    </div>`).join('') || '<p class="text-indigo-400 text-sm text-center py-6">কোনো অর্ডার নেই</p>';
 };
-window.verifyOrder = async (id) => { await updateDoc(doc(db,'orders',id),{status:'verified'}); loadOrders('all'); toast('অর্ডার ভেরিফাই হয়েছে!'); };
-window.rejectOrder = async (id) => { await updateDoc(doc(db,'orders',id),{status:'rejected'}); loadOrders('all'); toast('অর্ডার রিজেক্ট হয়েছে।'); };
+window.verifyOrder = async id => { await db.collection('orders').doc(id).update({ status: 'verified' }); loadOrders('all'); showToast('অর্ডার ভেরিফাই হয়েছে!'); };
+window.rejectOrder = async id => { await db.collection('orders').doc(id).update({ status: 'rejected' }); loadOrders('all'); showToast('অর্ডার রিজেক্ট হয়েছে।'); };
 
 // ── REVIEWS ADMIN ──
 async function renderAdminReviews() {
-    const snap = await getDocs(collection(db,'reviews'));
-    const rvs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-    const el = document.getElementById('rv-admin-list'); if(!el) return;
-    el.innerHTML = rvs.map(r => `<div class="acard flex justify-between items-start gap-3"><div><p class="text-white font-bold text-sm">${r.name} <span class="atag ml-1">${r.role}</span></p><p class="text-indigo-400 text-xs mt-1">"${r.text.slice(0,60)}..."</p></div><button onclick="delReview('${r.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো রিভিউ নেই</p>';
+  const snap = await db.collection('reviews').get();
+  const el = $('admin-reviews-list-el'); if (!el) return;
+  el.innerHTML = snap.docs.map(d => {
+    const r = { id: d.id, ...d.data() };
+    return `<div class="acard flex justify-between items-start gap-3">
+      <div><p class="text-white font-bold text-sm">${r.name} <span class="atag ml-1">${r.role}</span></p>
+        <p class="text-indigo-400 text-xs mt-1">"${r.text.slice(0, 70)}..."</p></div>
+      <button onclick="delReview('${r.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button>
+    </div>`;
+  }).join('') || '<p class="text-indigo-400 text-sm">কোনো রিভিউ নেই</p>';
 }
 window.addReview = async () => {
-    const r={name:gv('rv-name'),role:gv('rv-role'),text:gv('rv-text'),rating:parseInt(gv('rv-rating'))||5};
-    if(!r.name||!r.text){toast('নাম ও রিভিউ দিন!','err');return;}
-    await addDoc(collection(db,'reviews'),r); await loadReviews(); renderAdminReviews();
-    ['rv-name','rv-role','rv-text','rv-rating'].forEach(x=>sv(x,'')); toast('রিভিউ যোগ হয়েছে!');
+  const r = { name: gv('rv-name-in'), role: gv('rv-role-in'), text: gv('rv-text-in'), rating: parseInt(gv('rv-rating-in')) || 5 };
+  if (!r.name || !r.text) { showToast('নাম ও রিভিউ দিন!', 'err'); return; }
+  await db.collection('reviews').add(r);
+  await loadReviews(); renderAdminReviews();
+  ['rv-name-in','rv-role-in','rv-text-in','rv-rating-in'].forEach(x => sv(x, ''));
+  showToast('রিভিউ যোগ হয়েছে!');
 };
-window.delReview = async (id) => { await deleteDoc(doc(db,'reviews',id)); await loadReviews(); renderAdminReviews(); toast('মুছে ফেলা হয়েছে!'); };
+window.delReview = async id => {
+  await db.collection('reviews').doc(id).delete();
+  await loadReviews(); renderAdminReviews(); showToast('মুছে ফেলা হয়েছে!');
+};
 
 // ── PAYMENT METHODS ADMIN ──
 async function renderAdminPMs() {
-    const snap = await getDocs(collection(db,'paymentMethods'));
-    const pms = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-    const el = document.getElementById('pm-admin-list'); if(!el) return;
-    el.innerHTML = pms.map(pm => `<div class="acard flex justify-between items-center gap-3"><div><span class="text-white font-bold text-sm">${pm.name}</span><span class="atag ml-2">${pm.number}</span><span class="atag ml-1">${pm.type}</span></div><button onclick="delPM('${pm.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো মেথড নেই</p>';
+  const snap = await db.collection('paymentMethods').get();
+  const el = $('pm-admin-list-el'); if (!el) return;
+  const PMCLR = { pink:'bg-pink-100 text-pink-600', orange:'bg-orange-100 text-orange-600', yellow:'bg-yellow-100 text-yellow-600', indigo:'bg-indigo-100 text-indigo-600' };
+  el.innerHTML = snap.docs.map(d => {
+    const pm = { id: d.id, ...d.data() };
+    return `<div class="acard flex justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 ${PMCLR[pm.color] || PMCLR.indigo} rounded-lg flex items-center justify-center font-bold text-xs">${pm.name.slice(0, 3)}</div>
+        <div><span class="text-white font-bold text-sm">${pm.name}</span><span class="atag ml-2">${pm.number}</span></div>
+      </div>
+      <button onclick="delPM('${pm.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button>
+    </div>`;
+  }).join('') || '<p class="text-indigo-400 text-sm">কোনো মেথড নেই</p>';
 }
 window.addPM = async () => {
-    const pm={name:gv('pm-name'),number:gv('pm-number'),type:gv('pm-type'),color:gv('pm-color')||'indigo',order:Date.now()};
-    if(!pm.name||!pm.number){toast('নাম ও নাম্বার দিন!','err');return;}
-    await addDoc(collection(db,'paymentMethods'),pm); renderAdminPMs(); renderPMList();
-    ['pm-name','pm-number','pm-type','pm-color'].forEach(x=>sv(x,'')); toast('পেমেন্ট মেথড যোগ হয়েছে!');
+  const pm = { name: gv('pm-name-in'), number: gv('pm-number-in'), type: gv('pm-type-in'), color: gv('pm-color-in') || 'indigo', order: Date.now() };
+  if (!pm.name || !pm.number) { showToast('নাম ও নাম্বার দিন!', 'err'); return; }
+  await db.collection('paymentMethods').add(pm);
+  renderAdminPMs(); renderPMList();
+  ['pm-name-in','pm-number-in','pm-type-in','pm-color-in'].forEach(x => sv(x, ''));
+  showToast('পেমেন্ট মেথড যোগ হয়েছে!');
 };
-window.delPM = async (id) => { await deleteDoc(doc(db,'paymentMethods',id)); renderAdminPMs(); toast('মুছে ফেলা হয়েছে!'); };
+window.delPM = async id => { await db.collection('paymentMethods').doc(id).delete(); renderAdminPMs(); showToast('মুছে ফেলা হয়েছে!'); };
 
 // ── SITE SETTINGS ──
 function loadSiteForm() {
-    sv('ss-name',SITE.name);sv('ss-tg',SITE.tg);sv('ss-fb',SITE.fb);sv('ss-yt',SITE.yt);sv('ss-tagline',SITE.tagline);sv('ss-copy',SITE.copy);sv('ss-ptitle',SITE.ptitle);
-    const se=document.getElementById('stats-editor'); if(!se) return;
-    se.innerHTML = STATS.map((s,i)=>`<div class="flex gap-2 items-center"><input class="ai w-24 text-xs" value="${s.icon}" onchange="STATS[${i}].icon=this.value" placeholder="icon"><input class="ai w-24 text-xs" value="${s.val}" onchange="STATS[${i}].val=this.value" placeholder="value"><input class="ai flex-1 text-xs" value="${s.lbl}" onchange="STATS[${i}].lbl=this.value" placeholder="label"><button onclick="STATS.splice(${i},1);loadSiteForm();" class="ab abd text-xs py-1 px-2">✕</button></div>`).join('');
+  sv('ss-name-in', SITE.name); sv('ss-tg-in', SITE.tg); sv('ss-fb-in', SITE.fb);
+  sv('ss-yt-in', SITE.yt); sv('ss-tagline-in', SITE.tagline); sv('ss-copy-in', SITE.copy);
+  sv('ss-ptitle-in', SITE.ptitle);
+  const se = $('stats-editor-el'); if (!se) return;
+  se.innerHTML = STATS.map((s, i) => `
+    <div class="flex gap-2 items-center">
+      <input class="ai w-24 text-xs" value="${s.icon}" onchange="STATS[${i}].icon=this.value" placeholder="icon">
+      <input class="ai w-24 text-xs" value="${s.val}" onchange="STATS[${i}].val=this.value" placeholder="value">
+      <input class="ai flex-1 text-xs" value="${s.lbl}" onchange="STATS[${i}].lbl=this.value" placeholder="label">
+      <button onclick="STATS.splice(${i},1);loadSiteForm();" class="ab abd text-xs py-1 px-2">✕</button>
+    </div>`).join('');
 }
-window.addStatRow = () => { STATS.push({icon:'zap',val:'০',lbl:'নতুন স্ট্যাট'}); loadSiteForm(); };
+window.addStatRow = () => { STATS.push({ icon: 'zap', val: '০', lbl: 'নতুন স্ট্যাট' }); loadSiteForm(); };
 window.saveSiteSettings = async () => {
-    const site={name:gv('ss-name'),tg:gv('ss-tg'),fb:gv('ss-fb'),yt:gv('ss-yt'),tagline:gv('ss-tagline'),copy:gv('ss-copy'),ptitle:gv('ss-ptitle')};
-    await setDoc(doc(db,'settings','site'),site); await setDoc(doc(db,'settings','stats'),{items:STATS});
-    SITE=site; applySite(SITE); renderStatsBar(STATS); toast('সাইট সেটিংস আপডেট হয়েছে!');
-};
-
-window.saveHero = async () => {
-    const h={badge:gv('h-badge'),t1:gv('h-t1'),t2:gv('h-t2'),desc:gv('h-desc'),chartLabel:gv('h-cl'),chartAmount:gv('h-ca'),chartGrowth:gv('h-cg'),rating:gv('h-rt')};
-    await setDoc(doc(db,'settings','hero'),h); HERO=h; applyHero(HERO); toast('হোম পেজ আপডেট হয়েছে!');
+  const site = {
+    name: gv('ss-name-in'), tg: gv('ss-tg-in'), fb: gv('ss-fb-in'), yt: gv('ss-yt-in'),
+    tagline: gv('ss-tagline-in'), copy: gv('ss-copy-in'), ptitle: gv('ss-ptitle-in')
+  };
+  await db.collection('settings').doc('site').set(site);
+  await db.collection('settings').doc('stats').set({ items: STATS });
+  SITE = site; applySite(); renderStatsBar(); showToast('সাইট সেটিংস আপডেট হয়েছে!');
 };
 
 // ── CONDITIONS ADMIN ──
 async function renderAdminConds() {
-    const snap = await getDocs(query(collection(db,'conditions'),orderBy('order')));
-    const conds = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-    const el = document.getElementById('cond-admin-list'); if(!el) return;
-    el.innerHTML = conds.map(c => `<div class="acard flex justify-between items-start gap-3"><div><p class="text-white font-bold text-sm">${c.title}</p><p class="text-indigo-400 text-xs mt-1">${c.text.slice(0,60)}...</p></div><button onclick="delCond('${c.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো সেকশন নেই</p>';
+  const snap = await db.collection('conditions').get();
+  const el = $('cond-admin-list-el'); if (!el) return;
+  el.innerHTML = snap.docs.map(d => {
+    const c = { id: d.id, ...d.data() };
+    return `<div class="acard flex justify-between items-start gap-3">
+      <div><p class="text-white font-bold text-sm">${c.title}</p><p class="text-indigo-400 text-xs mt-1">${c.text.slice(0, 60)}...</p></div>
+      <button onclick="delCond('${c.id}')" class="ab abd text-xs py-1.5 px-3 shrink-0">মুছুন</button>
+    </div>`;
+  }).join('') || '<p class="text-indigo-400 text-sm">কোনো সেকশন নেই</p>';
 }
 window.addCond = async () => {
-    const c={title:gv('cnd-title'),icon:gv('cnd-icon')||'file-text',color:gv('cnd-color')||'text-indigo-500',text:gv('cnd-text'),order:Date.now()};
-    if(!c.title||!c.text){toast('শিরোনাম ও বিষয়বস্তু দিন!','err');return;}
-    await addDoc(collection(db,'conditions'),c); await loadConditions(); renderAdminConds();
-    ['cnd-title','cnd-icon','cnd-color','cnd-text'].forEach(x=>sv(x,'')); toast('শর্ত যোগ হয়েছে!');
+  const c = { title: gv('cnd-title-in'), icon: gv('cnd-icon-in') || 'file-text', color: gv('cnd-color-in') || 'text-indigo-500', text: gv('cnd-text-in'), order: Date.now() };
+  if (!c.title || !c.text) { showToast('শিরোনাম ও বিষয়বস্তু দিন!', 'err'); return; }
+  await db.collection('conditions').add(c);
+  await loadConditions(); renderAdminConds();
+  ['cnd-title-in','cnd-icon-in','cnd-color-in','cnd-text-in'].forEach(x => sv(x, ''));
+  showToast('শর্ত যোগ হয়েছে!');
 };
-window.delCond = async (id) => { await deleteDoc(doc(db,'conditions',id)); await loadConditions(); renderAdminConds(); toast('মুছে ফেলা হয়েছে!'); };
+window.delCond = async id => { await db.collection('conditions').doc(id).delete(); await loadConditions(); renderAdminConds(); showToast('মুছে ফেলা হয়েছে!'); };
 
 // ── CONTACTS ADMIN ──
 async function renderAdminContacts() {
-    const snap = await getDocs(collection(db,'contacts'));
-    const cts = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-    const el = document.getElementById('contact-admin-list'); if(!el) return;
-    el.innerHTML = cts.map(c => `<div class="acard flex justify-between items-center gap-3"><div><p class="text-white font-bold text-sm">${c.label}</p><p class="text-indigo-400 text-xs mt-1">${c.value}</p></div><button onclick="delContact('${c.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button></div>`).join('')||'<p class="text-indigo-400 text-sm">কোনো তথ্য নেই</p>';
+  const snap = await db.collection('contacts').get();
+  const el = $('contact-admin-list-el'); if (!el) return;
+  el.innerHTML = snap.docs.map(d => {
+    const c = { id: d.id, ...d.data() };
+    return `<div class="acard flex justify-between items-center gap-3">
+      <div><p class="text-white font-bold text-sm">${c.label}</p><p class="text-indigo-400 text-xs mt-1">${c.value}</p></div>
+      <button onclick="delContact('${c.id}')" class="ab abd text-xs py-1.5 px-3">মুছুন</button>
+    </div>`;
+  }).join('') || '<p class="text-indigo-400 text-sm">কোনো তথ্য নেই</p>';
 }
 window.addContact = async () => {
-    const c={label:gv('ct-label'),value:gv('ct-value'),type:gv('ct-type')||'link',icon:gv('ct-icon')||'link'};
-    if(!c.label||!c.value){toast('লেবেল ও ভ্যালু দিন!','err');return;}
-    await addDoc(collection(db,'contacts'),c); await loadContacts(); renderAdminContacts();
-    ['ct-label','ct-value','ct-type','ct-icon'].forEach(x=>sv(x,'')); toast('যোগাযোগ তথ্য যোগ হয়েছে!');
+  const c = { label: gv('ct-label-in'), value: gv('ct-value-in'), type: gv('ct-type-in') || 'link', icon: gv('ct-icon-in') || 'link' };
+  if (!c.label || !c.value) { showToast('লেবেল ও ভ্যালু দিন!', 'err'); return; }
+  await db.collection('contacts').add(c);
+  await loadContacts(); renderAdminContacts();
+  ['ct-label-in','ct-value-in','ct-type-in','ct-icon-in'].forEach(x => sv(x, ''));
+  showToast('যোগাযোগ তথ্য যোগ হয়েছে!');
 };
-window.delContact = async (id) => { await deleteDoc(doc(db,'contacts',id)); await loadContacts(); renderAdminContacts(); toast('মুছে ফেলা হয়েছে!'); };
+window.delContact = async id => { await db.collection('contacts').doc(id).delete(); await loadContacts(); renderAdminContacts(); showToast('মুছে ফেলা হয়েছে!'); };
 
-// ══════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════
-window.toast = (msg, type='ok') => { const e=document.getElementById('toast'); e.textContent=msg; e.className='toast show'+(type==='err'?' err':''); setTimeout(()=>e.classList.remove('show'),3000); };
-const gv = id => document.getElementById(id)?.value?.trim()||'';
-const sv = (id,v) => { const e=document.getElementById(id); if(e) e.value=v||''; };
-window.copyTxt = (t) => { navigator.clipboard.writeText(t).then(()=>toast('কপি হয়েছে: '+t)).catch(()=>toast('কপি করুন: '+t)); };
-
-// Keyboard shortcut for admin: Ctrl+Shift+A
-document.addEventListener('keydown', e => { if(e.ctrlKey && e.shiftKey && e.key==='A') openAdmin(); });
+// ── CHANNEL SETTINGS ──
+function loadChannelForm() {
+  db.collection('settings').doc('channel').get().then(s => {
+    if (s.exists) { sv('ch-desc-in', s.data().desc); sv('ch-mem-in', s.data().members); }
+  });
+}
+window.saveChannelSettings = async () => {
+  await db.collection('settings').doc('channel').set({ desc: gv('ch-desc-in'), members: gv('ch-mem-in') });
+  await loadSettings(); showToast('চ্যানেল সেটিংস সেভ হয়েছে!');
+};
 </script>
 </body>
 </html>
